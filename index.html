@@ -17,16 +17,12 @@
     .filter-btn { background: transparent; border: 2px solid white; color: white; border-radius: 20px; padding: 4px 16px; cursor: pointer; font-size: 13px; }
     .filter-btn.active { background: white; color: #1a6fd4; font-weight: bold; }
     .container { padding: 20px 16px; max-width: 800px; margin: auto; }
-
-    /* Main Type Card */
     .type-card { background: white; border-radius: 14px; margin-bottom: 18px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); overflow: hidden; }
     .type-header { background: #1a6fd4; color: white; padding: 14px 20px; font-size: 17px; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
     .type-header .arrow { font-size: 12px; transition: transform 0.3s; }
     .type-card.open .type-header .arrow { transform: rotate(180deg); }
     .subtypes-container { display: none; padding: 10px 16px 16px; }
     .type-card.open .subtypes-container { display: block; }
-
-    /* SubType Block */
     .subtype-block { background: #f8faff; border: 1px solid #dce8ff; border-radius: 10px; margin-top: 12px; overflow: hidden; }
     .subtype-header { padding: 12px 16px; font-size: 14px; font-weight: 600; color: #1a6fd4; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
     .subtype-header .arrow { font-size: 11px; transition: transform 0.3s; }
@@ -36,7 +32,7 @@
     .label { font-weight: bold; color: #333; font-size: 13px; margin-top: 8px; }
     .label:first-child { margin-top: 0; }
     .value { color: #444; font-size: 13px; white-space: pre-wrap; margin-top: 4px; line-height: 1.6; }
-
+    .highlight { background: #fff176; border-radius: 3px; padding: 0 2px; font-weight: bold; }
     .no-data { text-align: center; color: #888; margin-top: 40px; font-size: 15px; }
   </style>
 </head>
@@ -82,17 +78,27 @@
     renderCards();
   }
 
+  function highlight(text, query) {
+    if (!query) return text;
+    const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+    return text.replace(regex, '<span class="highlight">$1</span>');
+  }
+
+  function matchesQuery(text, query) {
+    return (text || '').toLowerCase().includes(query);
+  }
+
   function renderCards() {
-    const query = document.getElementById('searchBox').value.toLowerCase();
+    const query = document.getElementById('searchBox').value.toLowerCase().trim();
     const container = document.getElementById('cardContainer');
 
     let filtered = allData.filter(d => {
       const matchFilter = activeFilter === 'All' || d.type === activeFilter;
       const matchSearch = !query ||
-        (d.type||'').toLowerCase().includes(query) ||
-        (d.subType||'').toLowerCase().includes(query) ||
-        (d.preChecks||'').toLowerCase().includes(query) ||
-        (d.escalationPath||'').toLowerCase().includes(query);
+        matchesQuery(d.type, query) ||
+        matchesQuery(d.subType, query) ||
+        matchesQuery(d.preChecks, query) ||
+        matchesQuery(d.escalationPath, query);
       return matchFilter && matchSearch;
     });
 
@@ -108,27 +114,35 @@
       grouped[d.type].push(d);
     });
 
+    // Auto open if searching
+    const autoOpen = query.length > 0;
+
     container.innerHTML = Object.entries(grouped).map(([type, items]) => `
-      <div class="type-card">
+      <div class="type-card ${autoOpen ? 'open' : ''}">
         <div class="type-header" onclick="this.parentElement.classList.toggle('open')">
-          <span>📂 ${type}</span>
+          <span>📂 ${highlight(type, query)}</span>
           <span class="arrow">▼</span>
         </div>
         <div class="subtypes-container">
-          ${items.map(item => `
-            <div class="subtype-block">
+          ${items.map(item => {
+            const subtypeMatch = matchesQuery(item.subType, query);
+            const prechecksMatch = matchesQuery(item.preChecks, query);
+            const escalationMatch = matchesQuery(item.escalationPath, query);
+            const shouldOpen = autoOpen && (subtypeMatch || prechecksMatch || escalationMatch);
+            return `
+            <div class="subtype-block ${shouldOpen ? 'open' : ''}">
               <div class="subtype-header" onclick="this.parentElement.classList.toggle('open')">
-                <span>📌 ${item.subType || 'N/A'}</span>
+                <span>📌 ${highlight(item.subType || 'N/A', query)}</span>
                 <span class="arrow">▼</span>
               </div>
               <div class="subtype-details">
                 <div class="label">📋 Pre-checks:</div>
-                <div class="value">${item.preChecks || 'N/A'}</div>
+                <div class="value">${highlight(item.preChecks || 'N/A', query)}</div>
                 <div class="label">🔺 Escalation Path:</div>
-                <div class="value">${item.escalationPath || 'N/A'}</div>
+                <div class="value">${highlight(item.escalationPath || 'N/A', query)}</div>
               </div>
-            </div>
-          `).join('')}
+            </div>`;
+          }).join('')}
         </div>
       </div>
     `).join('');
