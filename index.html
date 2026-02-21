@@ -17,13 +17,26 @@
     .filter-btn { background: transparent; border: 2px solid white; color: white; border-radius: 20px; padding: 4px 16px; cursor: pointer; font-size: 13px; }
     .filter-btn.active { background: white; color: #1a6fd4; font-weight: bold; }
     .container { padding: 20px 16px; max-width: 800px; margin: auto; }
-    .card { background: white; border-radius: 12px; padding: 16px 20px; margin-bottom: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); cursor: pointer; }
-    .card h3 { color: #1a6fd4; font-size: 16px; margin-bottom: 4px; }
-    .card .subtype { color: #555; font-size: 13px; margin-bottom: 8px; }
-    .card .details { display: none; margin-top: 10px; border-top: 1px solid #eee; padding-top: 10px; }
-    .card.open .details { display: block; }
-    .label { font-weight: bold; color: #333; margin-top: 8px; font-size: 13px; }
-    .value { color: #444; font-size: 13px; white-space: pre-wrap; margin-top: 4px; }
+
+    /* Main Type Card */
+    .type-card { background: white; border-radius: 14px; margin-bottom: 18px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); overflow: hidden; }
+    .type-header { background: #1a6fd4; color: white; padding: 14px 20px; font-size: 17px; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+    .type-header .arrow { font-size: 12px; transition: transform 0.3s; }
+    .type-card.open .type-header .arrow { transform: rotate(180deg); }
+    .subtypes-container { display: none; padding: 10px 16px 16px; }
+    .type-card.open .subtypes-container { display: block; }
+
+    /* SubType Block */
+    .subtype-block { background: #f8faff; border: 1px solid #dce8ff; border-radius: 10px; margin-top: 12px; overflow: hidden; }
+    .subtype-header { padding: 12px 16px; font-size: 14px; font-weight: 600; color: #1a6fd4; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+    .subtype-header .arrow { font-size: 11px; transition: transform 0.3s; }
+    .subtype-block.open .subtype-header .arrow { transform: rotate(180deg); }
+    .subtype-details { display: none; padding: 12px 16px; border-top: 1px solid #dce8ff; }
+    .subtype-block.open .subtype-details { display: block; }
+    .label { font-weight: bold; color: #333; font-size: 13px; margin-top: 8px; }
+    .label:first-child { margin-top: 0; }
+    .value { color: #444; font-size: 13px; white-space: pre-wrap; margin-top: 4px; line-height: 1.6; }
+
     .no-data { text-align: center; color: #888; margin-top: 40px; font-size: 15px; }
   </style>
 </head>
@@ -72,6 +85,7 @@
   function renderCards() {
     const query = document.getElementById('searchBox').value.toLowerCase();
     const container = document.getElementById('cardContainer');
+
     let filtered = allData.filter(d => {
       const matchFilter = activeFilter === 'All' || d.type === activeFilter;
       const matchSearch = !query ||
@@ -81,19 +95,40 @@
         (d.escalationPath||'').toLowerCase().includes(query);
       return matchFilter && matchSearch;
     });
+
     if (filtered.length === 0) {
       container.innerHTML = '<p class="no-data">No results found.</p>';
       return;
     }
-    container.innerHTML = filtered.map(d => `
-      <div class="card" onclick="this.classList.toggle('open')">
-        <h3>${d.type || 'N/A'}</h3>
-        <div class="subtype">${d.subType || ''}</div>
-        <div class="details">
-          <div class="label">📋 Pre-checks:</div>
-          <div class="value">${d.preChecks || 'N/A'}</div>
-          <div class="label">🔺 Escalation Path:</div>
-          <div class="value">${d.escalationPath || 'N/A'}</div>
+
+    // Group by type
+    const grouped = {};
+    filtered.forEach(d => {
+      if (!grouped[d.type]) grouped[d.type] = [];
+      grouped[d.type].push(d);
+    });
+
+    container.innerHTML = Object.entries(grouped).map(([type, items]) => `
+      <div class="type-card">
+        <div class="type-header" onclick="this.parentElement.classList.toggle('open')">
+          <span>📂 ${type}</span>
+          <span class="arrow">▼</span>
+        </div>
+        <div class="subtypes-container">
+          ${items.map(item => `
+            <div class="subtype-block">
+              <div class="subtype-header" onclick="this.parentElement.classList.toggle('open')">
+                <span>📌 ${item.subType || 'N/A'}</span>
+                <span class="arrow">▼</span>
+              </div>
+              <div class="subtype-details">
+                <div class="label">📋 Pre-checks:</div>
+                <div class="value">${item.preChecks || 'N/A'}</div>
+                <div class="label">🔺 Escalation Path:</div>
+                <div class="value">${item.escalationPath || 'N/A'}</div>
+              </div>
+            </div>
+          `).join('')}
         </div>
       </div>
     `).join('');
@@ -103,4 +138,3 @@
 </script>
 </body>
 </html>
-
