@@ -1,154 +1,272 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>⚡ Volt Support Pro</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', sans-serif; background: #f0f4ff; }
-    header { background: #1a6fd4; padding: 24px 16px; text-align: center; color: white; }
-    header h1 { font-size: 24px; margin-bottom: 12px; }
-    header h1 span { color: #ffd700; }
-    .live-badge { display: inline-block; background: white; color: #1a6fd4; border-radius: 20px; padding: 2px 10px; font-size: 12px; font-weight: bold; margin-left: 8px; }
-    .live-dot { display: inline-block; width: 8px; height: 8px; background: #22c55e; border-radius: 50%; margin-right: 4px; }
-    input[type="text"] { width: 90%; max-width: 500px; padding: 12px 20px; border-radius: 30px; border: none; font-size: 15px; outline: none; margin-top: 12px; }
-    .filters { margin-top: 12px; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
-    .filter-btn { background: transparent; border: 2px solid white; color: white; border-radius: 20px; padding: 4px 16px; cursor: pointer; font-size: 13px; }
-    .filter-btn.active { background: white; color: #1a6fd4; font-weight: bold; }
-    .container { padding: 20px 16px; max-width: 800px; margin: auto; }
-    .type-card { background: white; border-radius: 14px; margin-bottom: 18px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); overflow: hidden; }
-    .type-header { background: #1a6fd4; color: white; padding: 14px 20px; font-size: 17px; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
-    .type-header .arrow { font-size: 12px; transition: transform 0.3s; }
-    .type-card.open .type-header .arrow { transform: rotate(180deg); }
-    .subtypes-container { display: none; padding: 10px 16px 16px; }
-    .type-card.open .subtypes-container { display: block; }
-    .subtype-block { background: #f8faff; border: 1px solid #dce8ff; border-radius: 10px; margin-top: 12px; overflow: hidden; }
-    .subtype-header { padding: 12px 16px; font-size: 14px; font-weight: 600; color: #1a6fd4; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
-    .subtype-header .arrow { font-size: 11px; transition: transform 0.3s; }
-    .subtype-block.open .subtype-header .arrow { transform: rotate(180deg); }
-    .subtype-details { display: none; padding: 12px 16px; border-top: 1px solid #dce8ff; }
-    .subtype-block.open .subtype-details { display: block; }
-    .label { font-weight: bold; color: #333; font-size: 13px; margin-top: 8px; }
-    .label:first-child { margin-top: 0; }
-    .value { color: #444; font-size: 13px; white-space: pre-wrap; margin-top: 4px; line-height: 1.6; }
-    .highlight { background: #fff176; border-radius: 3px; padding: 0 2px; font-weight: bold; }
-    .no-data { text-align: center; color: #888; margin-top: 40px; font-size: 15px; }
-  </style>
-</head>
-<body>
-<header>
-  <h1>⚡ Volt Support <span>Pro</span>
-    <span class="live-badge"><span class="live-dot"></span>LIVE</span>
-  </h1>
-  <input type="text" id="searchBox" placeholder="Search issues..." oninput="renderCards()"/>
-  <div class="filters" id="filters"></div>
-</header>
-<div class="container" id="cardContainer">
-  <p class="no-data">Loading...</p>
-</div>
-<script>
-  let allData = [];
-  let activeFilter = 'All';
-
-  async function loadData() {
-    try {
-      const res = await fetch('/api/sheet');
-      allData = await res.json();
-      buildFilters();
-      renderCards();
-    } catch(e) {
-      document.getElementById('cardContainer').innerHTML = '<p class="no-data">Error loading data.</p>';
-    }
+[
+  {
+    "type": "Repayment Issues",
+    "subType": "Amount paid but POS not updated in app / Deducted from customer but status requested in Appsmith",
+    "preChecks": "1) Paid from own account: Verify payment details and update the status\n\n2) Third-party Payment: For DSP Users: Request the user to send an email from their registered email ID to support@voltmoney.in with supporting documents (proof of relationship if the user is made the repayment from his wife's account and vice versa and Aadhaar card if the user is made the repayment from father's account and vice versa). The repayment amount will be accounted for within 24 hours; otherwise, it will be reversed to the source bank account.\n\nFor TATA: No thirdparty repayment will be accepted. If any user is already made and reached out, Ask the user to drop an email to support@voltmoney.in from their registered email id along with the bank statement and canceled cheque from which they have made a repayment and raise a Zendesk ticket, the amount will be reversed to their account.\n\n- Need to collect a Cancelled cheque for accounting purposes if the payment was made from a joint account.\n- A bank statement and cancelled cheque are required if the payment was made from a third-party account for refund processing\n\n3) Bank transfer: Account to account transfer - The repayment accounting TAT is 1-2 Business days\n\n4) Online Banking (UPI, Debit card and Net banking): Expected TAT - 10 mins (within Business Hours)",
+    "escalationPath": "Raise Zendesk Ticket if TAT is crossed"
+  },
+  {
+    "type": "Repayment Issues",
+    "subType": "Amount paid on X date but accounted for Y date / Account Date Issue / Accounting error in repayment / Amount Incorrect in SOA",
+    "preChecks": "Check repayment timing\n\nIf paid before 6 PM:\n1) Paid after 6 PM: Inform that amount paid after 6 PM will be accounted for next day\n2) Paid after 6 PM: Inform that amount paid after 6 PM will be accounted for next day",
+    "escalationPath": "Raise Zendesk Ticket if not accounted on same date"
+  },
+  {
+    "type": "Repayment Issues",
+    "subType": "Accounting error in repayment / Amount Incorrect in SOA",
+    "preChecks": "1) Check if accounted in SOA\n• Check for additional charges in SOA: Verify bounce charges and penal charges in SOA\n• Check If Previous Bounce Charges are deducted\n• Any previous penal charges are deducted\n• Whether above charges create a difference in amount\n\n2) Not accounted in SOA:\na) Status: Requested - It may take some time for the Payment Gateway to confirm the payment status. If the payment is completed and the confirmation is delayed, the amount will be automatically refunded to the user. Ask whether repayment amount is deducted from the user's bank account, if yes, either the repayment amount will\nb) Status: Success with Lender, Recon failed\nc) Status: Collection Complete",
+    "escalationPath": "If the issue persists even after the TAT is crossed, raise Zendesk/JIRA ticket"
+  },
+  {
+    "type": "Repayment Issues",
+    "subType": "Repayment screen not opening / Repayment Screen Issues",
+    "preChecks": "1) Ask the user to try using the web interface\n2) Ask the user to try using the mobile app",
+    "escalationPath": "If error persists, get screenshot and raise Zendesk/JIRA ticket"
+  },
+  {
+    "type": "Repayment Issues",
+    "subType": "Repayment Failed",
+    "preChecks": "This can happen due to an issue with user's bank / mode of payment.\n\nFor DSP, TATA the refund TAT is 5-7 business days.\nFor stuck payments, the turnaround time for refund is 5-7 days.\n\n- If payment was completed by the user but not processed in 24 hours, inform the user as a \"failure repayment\"\n- The refund will be processed within 5 working days as per product policy.",
+    "escalationPath": "Raise the ticket Zendesk/JIRA, if the repayment amount is not refunded to the user's bank account and TAT is crossed"
+  },
+  {
+    "type": "Repayment Issues",
+    "subType": "Third party payment related",
+    "preChecks": "Note: Q: Whether user can make a repayment from his individual current bank account or from business current bank account?\nA: User can make a repayment from his own individual current bank account via only bank transfer, not from his business current bank account.",
+    "escalationPath": "Within 24 hours funds will refunded back to source bank account"
+  },
+  {
+    "type": "Withdrawal Issues",
+    "subType": "Withdrawal rejected / Withdrawal Rejection Reason",
+    "preChecks": "1) Pending Credit Approval - Check credit approval status and inform the user\n2) Withdrawal Amount less than Available limit - Inform the user about minimum withdrawal amount",
+    "escalationPath": "For pending credit approval, ask the user to wait for 2 to 3 hours, if the issue still persists after the TAT, raise Zendesk/JIRA ticket"
+  },
+  {
+    "type": "Withdrawal Issues",
+    "subType": "Unable to Place a Withdrawal request / Option grayed out",
+    "preChecks": "Check application status:\n\n1) Status: Completed - Lodgement Delayed: Check lodgement status and inform the user\n2) Status: In Progress - Account Opening delayed: Wait for 2 hours TAT, then raise ticket if needed\n3) Status: Completed - Account opening completed:\n- If the withdrawal amount is reversed means not credited to the user's account and status on the Appsmith is not updated as failed. (The status on the Appsmith will be automatically updated as failed, if it is not marked as failed in the system)\n- If the disbursal amount has already been credited to the user's account but the status in the Appsmith is still showing as \"Requested\", it means the update has not been reflected in the system. As a result, the user will be unable to raise another withdrawal request.",
+    "escalationPath": "Raise Zendesk Ticket"
+  },
+  {
+    "type": "Withdrawal Issues",
+    "subType": "Unable to Place a Withdrawal request",
+    "preChecks": "Check Disbursal Status:\n1) Status: Queued - Check the expected completion on tab on Appsmith and assist the user\n2) Status: Approved - Check the expected completion on tab on Appsmith and assist the user\n3) Status: Settled - Check the expected completion on tab on Appsmith and assist the user\n4) Status: Lender API Failure",
+    "escalationPath": "Raise Zendesk Ticket if expected completion on TAT crossed"
+  },
+  {
+    "type": "Withdrawal Issues",
+    "subType": "Amount not received in bank account",
+    "preChecks": "Status: Rejected - When disbursal is pending, please check the disbursalStatusRemarks which will show \"Pending on checker approval\".\n\nIf the user has entered incorrect details while processing the application (for example, entering their own name instead of the father's name), the application will still move forward. However, the credit status will remain in \"Pending Checker Approval\".\n\nIn such cases, do not raise any ticket, the system will take the user back to the stage where the incorrect details were entered. The user must:\n1. Re-enter the correct details and complete the stage\n2. Complete the agreement again\n\nOnly after these steps are completed correctly, the account be opened successfully and user can place a new withdrawal request.",
+    "escalationPath": "Settled in system/SOA but not received - Ask the user to share the bank statement - Raise Zendesk Ticket"
+  },
+  {
+    "type": "Withdrawal Issues",
+    "subType": "Manual disbursement needed",
+    "preChecks": "For DSP there is no manual disbursement option\nFor TATA: Get user consent and raise a ticket for manual disbursement",
+    "escalationPath": "Raise Zendesk Ticket"
+  },
+  {
+    "type": "Foreclosure Issues",
+    "subType": "Unable to Submit Foreclosure",
+    "preChecks": "If the user is unable to raise a foreclosure request \"Error: Something went Wrong\" - First check in Appsmith whether the credit sub-status is closed.\n\nCheck the following:\n1) If there is any accrued interest is pending\n2) If there is any excess amount to get settled\n\nIf the credit sub-status is closed, raise a ticket to the OPS team to confirm the reason for the closed status. After confirmation, the OPS team will raise the foreclosure request through admin action. No tech team involvement is required.",
+    "escalationPath": "Raise Zendesk/JIRA, if nothing is pending"
+  },
+  {
+    "type": "Foreclosure Issues",
+    "subType": "Foreclosure Success but lien not removed",
+    "preChecks": "Check Holding Statement and get Individual AMC Statement from User to verify lien-marked funds",
+    "escalationPath": "If the funds are still lien marked, raise Zendesk Ticket"
+  },
+  {
+    "type": "Foreclosure Issues",
+    "subType": "Foreclosure Pending - Lender Approval",
+    "preChecks": "Wait for 1 business day TAT",
+    "escalationPath": "If the foreclosure status is still pending for lender approval even after 1 business day TAT, raise Zendesk ticket"
+  },
+  {
+    "type": "Foreclosure Issues",
+    "subType": "Loan Not Closed After Foreclosure / Outstanding Charges Pending",
+    "preChecks": "Ask the user to clear charges and reinitiate foreclosure",
+    "escalationPath": "NA"
+  },
+  {
+    "type": "Foreclosure Issues",
+    "subType": "Loan Not Closed After Foreclosure",
+    "preChecks": "Pre-Checks: Check for Holding Statement emails and NOC\n\nForeclosure TAT:\nFor DSP the TAT is: T+2 Business days\nFor TATA the TAT is T+5 Business days",
+    "escalationPath": "Raise Zendesk ticket if issues found"
+  },
+  {
+    "type": "TATA - Loan Closure after the maturity",
+    "subType": "Loan closure and lien removal after the loan expired",
+    "preChecks": "The user will receive a renewal notification one month before the expiry date. If the user does not wish to renew, they must foreclose the loan account by paying the total outstanding dues. If neither renewal nor foreclosure is completed before the expiry date, the foreclosure and lien removal process will be initiated as mentioned below:\n\n1) LRN Notice Initiation – Triggered 5 days after the loan expiry date (Loan Recall Notice)\n2) Sell-Off Process – Initiated 7 working days post LRN notice\n3) Amount Reflection in SOA – Reflected 7 days after the sell-off is completed\n4) Unpledge & Loan Closure – Completed within 5 days from the date of accounting\n\nApplicable scenarios and timelines:\n1) Customers who made payment before maturity but the renewal failed: Auto-foreclosure and lien removal within 5 working days\n2) Customers who paid the outstanding amount and are eligible for an excess refund: Accounting period is 7 days, followed by auto-foreclosure and lien removal within 5 working days\n3) Customers who make payment during or just before the LRN period post-maturity: The lender shares the data with their legal team within 2 days post maturity, and the team issues LRN notices within 5 days. Manual ticket needs to be raised for early closure and lien removal. Process may take approximately 20 to 25 days.",
+    "escalationPath": "Check Zendesk whether ticket is raised after the TAT is crossed, if not raise a Zendesk ticket"
+  },
+  {
+    "type": "TATA - Repayment After Loan Maturity",
+    "subType": "Repayment After TATA Loan Maturity",
+    "preChecks": "After the loan matures, the customer gets time from the 1st working day to the 7th working day to pay the outstanding (OS) amount:\n\n1. If the OS amount is paid within this period, the loan account will be closed within 10 working days after final adjustments\n2. If the OS amount is not paid by the 7th working day, an LRN will be issued\n3. The customer then gets another chance to pay the OS amount between the 7th and 14th working day\n4. If the OS amount is not paid by the 14th working day, the portfolio sell-off process will be started\n5. The full process of settling dues, closing the loan account, and un-liening the funds can take up to 30 working days\n\nImportant Notes:\n1. If a user contacts support on the 15th working day asking whether they can still make a repayment, check with OPS to confirm whether repayment is allowed or if the portfolio sell-off is already planned\n2. If a user makes a repayment on or after the 15th working day, raise an OPS ticket immediately to request a hold on the sell-off",
+    "escalationPath": "If TAT crossed, please raise ticket"
+  },
+  {
+    "type": "Lien removal",
+    "subType": "Few of my funds are still not unpledged",
+    "preChecks": "No Funds Reflecting in holding Statement: Ask the user to share Individual AMC statement\n\nFor DSP the TAT is: T+2 Business days\nFor TATA the TAT is T+3 Business days\n\nWait for 1 business day\n\nWhen a user raises a lien removal request, it should move from requested to success in a happy flow. If it stays in queued state for more than 1 hour",
+    "escalationPath": "Verify at your end & raise Zendesk Ticket with AMC statement attached. If TAT is breached, raised Zendesk Ticket"
+  },
+  {
+    "type": "Lien removal",
+    "subType": "Unable to submit Lien Removal",
+    "preChecks": "This error reflects when the user has already unpledged the amount per available limit - Buffer Logic Calculator to be referred\n\nPre-Checks:\n1. Outstanding amount if any\n2. How much amount user wants to unpledge\n\nAction:\n1. If Funds are available to unlien as per calculation - Raise Ticket\n2. If Funds are not available to unlien as per calculation - Inform user to repay that much amount to initiate unlien\n\nPre-Check the lien removal TAT:\nFor DSP the TAT is: T+2 Business days\nFor TATA the TAT is T+3 Business days",
+    "escalationPath": "If no issue identified at customer end, Raise Zendesk Ticket"
+  },
+  {
+    "type": "Lien removal",
+    "subType": "User had raised a lien removal request",
+    "preChecks": "Check if TAT is crossed",
+    "escalationPath": "If TAT is crossed, Raise Zendesk Ticket"
+  },
+  {
+    "type": "Interest/Charges Dispute",
+    "subType": "Why I have been charged bounce charges when I have already paid the Interest?",
+    "preChecks": "1) Check manual interest payment:\na) Posted as Advance Interest\nb) Not accounted before Autodebit date\n\n2) Check mandate registration: Tracker sheet and select the interest sheet of the month: Operations Tracker\n\nInform the user about mandate status and suggest manual payment before 5th of every month for DSP, on 3rd of every month for TATA",
+    "escalationPath": "If issue found, Raise Zendesk Ticket for Waive off"
+  },
+  {
+    "type": "Interest/Charges Dispute",
+    "subType": "Why Penal Charges have been incurred?",
+    "preChecks": "Check charge type\nAction: Follow same process as Bounce Charges",
+    "escalationPath": "If issue found, Raise Zendesk Ticket for Waive off"
+  },
+  {
+    "type": "Interest/Charges Dispute",
+    "subType": "My Mandate is already registered, still interest is charged more?",
+    "preChecks": "1) Interest Amount Incorrect - Action: Cross-check SOA & APPSMITH\n2) Interest Rate Incorrect - Action: Cross-check SOA & APPSMITH\n\nNote: If the user has canceled the mandate registration, the lender will not send the mandate confirmation. However, if the user fails to pay the interest amount on or before the interest due date by 6:00 PM, bounce charges will be applicable",
+    "escalationPath": "If issue found, then raise Zendesk Ticket"
+  },
+  {
+    "type": "Limit Issues",
+    "subType": "Unable to see updated limit - Line enhancement done",
+    "preChecks": "Pre-Checks: Check if user has done any revocation (unlien)\nAction: Check Pledge Confirmation Email and Drawing Power, if everything is correct, Use the Admin Action to Refresh Credit Info\n\nNew Application: Check Pledge confirmation Email and tally with Appsmith and Holding statement",
+    "escalationPath": "Raise Zendesk & JIRA if discrepancy exists/Found. Ask the user to wait for 2 hours TAT. Raise Zendesk & JIRA if the issue exists even after the TAT is crossed. Action: Check Pledge Confirmation Email and Updated Sanction Limit in APPSMITH. Use Admin Action to Refresh Credit Info, Raise Zendesk/JIRA if the issue persists"
+  },
+  {
+    "type": "Account Opening/Lodgement Delayed",
+    "subType": "Account opening issue",
+    "preChecks": "Check Application Status\nCheck Appsmith On-Call Dashboard for pending Account Opening Application IDs\nCheck account discrepancy\nConnect with customer for required documents and update tickets, TAT is 2 Business hours",
+    "escalationPath": "Raise Zendesk Tickets only if Application ID not in Dashboard"
+  },
+  {
+    "type": "Account Opening/Lodgement Delayed",
+    "subType": "Lodgment issue",
+    "preChecks": "If lodgement is not done, check the application completion date and time and ask the user to wait for 2 hours to get the lodgement done from the application completion date and time.\n\nIf still the complete lodgement is not done: Check Zendesk pledge email confirmation, tally with Appsmith and Holding statement, if funds are not lodged then raise a Zendesk/JIRA ticket if TAT is crossed.\n\nIf partial lodgement is done: Check Zendesk pledge email confirmation, tally with Appsmith and Holding statement, then raise a Zendesk ticket for manual lodgment If TAT is crossed.\n\nWhen lodgement is pending, please check the CreditStatusRemarks where it will mention \"Pending on checker approval\".\n\nIf the user has entered incorrect details while processing the application (for example, entering their own name instead of the father's name), the application will still move forward. However, the credit status will remain in \"Pending Checker Approval\".\n\nIn such cases, do not raise any ticket, the system will take the user back to the stage where the incorrect details were entered. The user must:\n1. Re-enter the correct details and complete the stage\n2. Complete the agreement again\n\nOnly after these steps are completed correctly the account be opened successfully",
+    "escalationPath": "For Complete lodgment issue - Raise a Zendesk/JIRA ticket if TAT is crossed. For Manual lodgment issue - Raise a Zendesk ticket if TAT is crossed"
+  },
+  {
+    "type": "Change Bank Account",
+    "subType": "DSP Bank Account Change",
+    "preChecks": "Check if request is valid",
+    "escalationPath": "Update the Zendesk ticket with relevant screenshots if there is an issue is identified"
+  },
+  {
+    "type": "Change Bank Account",
+    "subType": "TATA Bank Account Change",
+    "preChecks": "Check if request is valid",
+    "escalationPath": "Update the Zendesk ticket with relevant screenshots if there is an issue is identified"
+  },
+  {
+    "type": "Change IFSC Code",
+    "subType": "DSP IFSC Code Change",
+    "preChecks": "Verify IFSC code details",
+    "escalationPath": "Update the Zendesk ticket with relevant screenshots if there is an issue is identified"
+  },
+  {
+    "type": "Change IFSC Code",
+    "subType": "TATA IFSC Code Change",
+    "preChecks": "Verify IFSC code details",
+    "escalationPath": "Update the Zendesk ticket with relevant screenshots if there is an issue is identified"
+  },
+  {
+    "type": "Change Phone Number",
+    "subType": "DSP Phone number Change",
+    "preChecks": "Note: If the registered mobile number is blocked and the user is unable to retrieve it or receive the OTP on the registered email ID, ask the user to send an email to support@voltmoney.in from their registered email ID, mentioning the reason for the number being blocked. An OPS ticket should then be raised for manually updating the mobile number.\n\nProcess to Update Registered Mobile Number via Admin Action after completing the application process",
+    "escalationPath": "Raise OPS ticket if needed"
+  },
+  {
+    "type": "Change Phone Number",
+    "subType": "TATA Phone number Change",
+    "preChecks": "Note: If the registered mobile number is blocked and the user is unable to retrieve it or receive the OTP on the registered email ID, ask the user to send an email to support@voltmoney.in from their registered email ID, mentioning the reason for the number being blocked. An OPS ticket should then be raised for manually updating the mobile number.\n\nProcess to Update Registered Mobile Number via Admin Action after completing the application process",
+    "escalationPath": "Raise OPS ticket if needed"
+  },
+  {
+    "type": "Change Phone Number",
+    "subType": "Changing Mobile Number for Two Active Loan Accounts",
+    "preChecks": "If the user is having two active loan accounts such as TATA and DSP\n\nProcess: For your understanding, do not communicate with the user: OPS will raise it to lenders, once it is approved from the lenders, it would be raised assigned to tech to get the mobile number updated",
+    "escalationPath": "Raise an OPS ticket"
+  },
+  {
+    "type": "Change Email ID",
+    "subType": "DSP Email ID Change",
+    "preChecks": "Verify email change request",
+    "escalationPath": "Raise ticket if needed"
+  },
+  {
+    "type": "Change Email ID",
+    "subType": "TATA Email ID Change",
+    "preChecks": "Verify email change request",
+    "escalationPath": "Raise ticket if needed"
+  },
+  {
+    "type": "Change Bank Account for dual loan account",
+    "subType": "If a user has dual loan accounts (e.g., TATA & DSP)",
+    "preChecks": "1. Guide the User: Ask the user to send an email to support@voltmoney.in from their registered email ID. The email should include the context and reason for the bank account change — but should not mention the lender names.\n\n2. Internal Process: The relevant team will raise a ticket to tech to get the bank account updated.\n\n3. Agent Communication: Clearly inform the user that until the bank account is updated for both lenders, they should not raise any withdrawal requests, as such requests may get stuck during processing.\n\nNote: TATA and DSP won't take 15BD for the mandate confirmation from the bank since both are digital mandate process",
+    "escalationPath": "Raise a JIRA ticket"
+  },
+  {
+    "type": "Renewal Process",
+    "subType": "Lenders - DSP, TATA",
+    "preChecks": "Check renewal eligibility and charges",
+    "escalationPath": "Raise a Zendesk ticket if found any discrepancy in the renewal charges"
+  },
+  {
+    "type": "NOC",
+    "subType": "Lenders - DSP, TATA",
+    "preChecks": "Check if loan is closed and NOC should be issued",
+    "escalationPath": "Raise a Zendesk ticket if the user won't receive the NOC after loan is closed"
+  },
+  {
+    "type": "Credit Bureau Issues",
+    "subType": "Loan account still showing active on credit bureau after closure",
+    "preChecks": "Delay in bureau status update (post 30–45 days)\n\nConfirm loan closure date in system and inform the user to check their credit report about 30-45 days after closing a loan to ensure the lender has reported the closure to the credit bureau.\n\nNote: The loan account report cannot be removed from credit bureau, only the status of the loan account will be updated. Changing from 'Active' to 'Closed' or 'Inactive'",
+    "escalationPath": "If >45 days and still showing active → Collect bureau screenshot → Raise Zendesk ticket → Ops team to coordinate with bureau"
+  },
+  {
+    "type": "Credit Bureau Issues",
+    "subType": "Loan closure status not reflecting correctly - Bureau data mismatch",
+    "preChecks": "Check if user has closed the account & NOC issued, and inform the user to check their credit report about 30-45 days after closing a loan to ensure the lender has reported the closure to the credit bureau.\n\nNote: The loan account report cannot be removed from credit bureau, only the status of the loan account will be updated. Changing from 'Active' to 'Closed' or 'Inactive'",
+    "escalationPath": "If bureau contacts us → Provide closure confirmation, they will update in their system. If user approaches us → Raise Zendesk ticket with bureau screenshot"
+  },
+  {
+    "type": "Manual Unpledging Funds in Shares Format",
+    "subType": "If a user wants to unpledge funds that are in shares format",
+    "preChecks": "Process:\n1. User Action: User must send an email to support@voltmoney.in requesting unpledging of share-based funds. Email should include relevant details along with reason for unpledge.\n2. Internal Action: Raise a Zendesk ticket with the email context. Tag under \"Manual Unpledge Request – Shares\"\n3. TAT (Turnaround Time): T+3 to T+7 business days for unpledging process to be completed\n4. Communication: Inform the user about the expected TAT and notify them once funds are successfully unpledged",
+    "escalationPath": "Raise Zendesk ticket"
+  },
+  {
+    "type": "Flow of frozen loan accounts",
+    "subType": "If the Credit sub status is Frozen/Closed",
+    "preChecks": "Trigger Points for Account Freeze - An account may be frozen under the following scenarios:\n- Foreclosure initiated\n- Loan recall notice issued\n- Risk team analysis/monitoring\n- Deceased customer\n- Customer alerting DSP of suspected fraudulent activity\n\nCustomer Communication: In case of Recall, a formal recall notice is sent to the customer via email. Other freeze scenarios are handled on a case-to-case basis with controlled communication.\n\nRepayment Timeline Post Recall: Customers are provided a TAT of 3 calendar days from the date of recall notice to repay the Total Outstanding (TOS).\n\nSell-off Initiation Timeline: If repayment is not received within the 3-calendar-day window, sell-off is initiated on the next business day by 12 PM.\n\nSell-off Execution TAT: Sell-off completion typically takes 6–7 business days, subject to market conditions and fund liquidity.\n\nPost Sell-off Accounting & Closure: Post sell-off accounting and adjustments are completed. Remaining funds are un-liened (if any). Loan account closure is completed within 2 business days post accounting.\n\nNote: If the Credit substatus is frozen or closed - User cannot raise a foreclose and lien removal request and cannot place a withdrawal request",
+    "escalationPath": "Handle as per freeze scenario"
+  },
+  {
+    "type": "TATA - Loan Recall",
+    "subType": "Loan Recall on 4 Consecutive NACH Bounces",
+    "preChecks": "TCL will initiate a loan recall if a customer's NACH mandate bounces four times consecutively.\n\nMitigation Process:\n- TCL will share the list of such customers with us\n- Affected customers will be required to repay the outstanding amount within 15 days to avoid the loan recall",
+    "escalationPath": "Follow standard recall process"
+  },
+  {
+    "type": "TATA - Loan Renewal Eligibility",
+    "subType": "Loan Renewal Eligibility Criteria",
+    "preChecks": "TCL will not renew loans for customers who fall under any of the following criteria:\na. More than 2 instalment bounces in the last 6 months\nb. In 30+ DPD during the last 3 months\nc. In 90+ DPD during the last 6 months\nd. CIBIL score below 650\n\nAligned process:\n- TCL will share the list of customers ineligible for renewal at least 1 month in advance\n- If there is a delay in sharing this list and a customer has already given consent for renewal, TCL has agreed to proceed with renewal in such cases",
+    "escalationPath": "Refer the SOP for more information: SOP for handling of customers not eligible for renewal"
   }
-
-  function buildFilters() {
-    const types = ['All', ...new Set(allData.map(d => d.type).filter(Boolean))];
-    const container = document.getElementById('filters');
-    container.innerHTML = types.map(t =>
-      `<button class="filter-btn ${t === 'All' ? 'active' : ''}" onclick="setFilter('${t}')">${t}</button>`
-    ).join('');
-  }
-
-  function setFilter(type) {
-    activeFilter = type;
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-      btn.classList.toggle('active', btn.textContent === type);
-    });
-    renderCards();
-  }
-
-  function highlight(text, query) {
-    if (!query) return text;
-    const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-    return text.replace(regex, '<span class="highlight">$1</span>');
-  }
-
-  function matchesQuery(text, query) {
-    return (text || '').toLowerCase().includes(query);
-  }
-
-  function renderCards() {
-    const query = document.getElementById('searchBox').value.toLowerCase().trim();
-    const container = document.getElementById('cardContainer');
-
-    let filtered = allData.filter(d => {
-      const matchFilter = activeFilter === 'All' || d.type === activeFilter;
-      const matchSearch = !query ||
-        matchesQuery(d.type, query) ||
-        matchesQuery(d.subType, query) ||
-        matchesQuery(d.preChecks, query) ||
-        matchesQuery(d.escalationPath, query);
-      return matchFilter && matchSearch;
-    });
-
-    if (filtered.length === 0) {
-      container.innerHTML = '<p class="no-data">No results found.</p>';
-      return;
-    }
-
-    // Group by type
-    const grouped = {};
-    filtered.forEach(d => {
-      if (!grouped[d.type]) grouped[d.type] = [];
-      grouped[d.type].push(d);
-    });
-
-    // Auto open if searching
-    const autoOpen = query.length > 0;
-
-    container.innerHTML = Object.entries(grouped).map(([type, items]) => `
-      <div class="type-card ${autoOpen ? 'open' : ''}">
-        <div class="type-header" onclick="this.parentElement.classList.toggle('open')">
-          <span>📂 ${highlight(type, query)}</span>
-          <span class="arrow">▼</span>
-        </div>
-        <div class="subtypes-container">
-          ${items.map(item => {
-            const subtypeMatch = matchesQuery(item.subType, query);
-            const prechecksMatch = matchesQuery(item.preChecks, query);
-            const escalationMatch = matchesQuery(item.escalationPath, query);
-            const shouldOpen = autoOpen && (subtypeMatch || prechecksMatch || escalationMatch);
-            return `
-            <div class="subtype-block ${shouldOpen ? 'open' : ''}">
-              <div class="subtype-header" onclick="this.parentElement.classList.toggle('open')">
-                <span>📌 ${highlight(item.subType || 'N/A', query)}</span>
-                <span class="arrow">▼</span>
-              </div>
-              <div class="subtype-details">
-                <div class="label">📋 Pre-checks:</div>
-                <div class="value">${highlight(item.preChecks || 'N/A', query)}</div>
-                <div class="label">🔺 Escalation Path:</div>
-                <div class="value">${highlight(item.escalationPath || 'N/A', query)}</div>
-              </div>
-            </div>`;
-          }).join('')}
-        </div>
-      </div>
-    `).join('');
-  }
-
-  loadData();
-</script>
-</body>
-</html>
+]
