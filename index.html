@@ -1,1 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>⚡ Volt Support Pro</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f0f4ff; }
+    header { background: #1a6fd4; padding: 24px 16px; text-align: center; color: white; }
+    header h1 { font-size: 24px; margin-bottom: 12px; }
+    header h1 span { color: #ffd700; }
+    .live-badge { display: inline-block; background: white; color: #1a6fd4; border-radius: 20px; padding: 2px 10px; font-size: 12px; font-weight: bold; margin-left: 8px; }
+    .live-dot { display: inline-block; width: 8px; height: 8px; background: #22c55e; border-radius: 50%; margin-right: 4px; }
+    input[type="text"] { width: 90%; max-width: 500px; padding: 12px 20px; border-radius: 30px; border: none; font-size: 15px; outline: none; margin-top: 12px; }
+    .filters { margin-top: 12px; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+    .filter-btn { background: transparent; border: 2px solid white; color: white; border-radius: 20px; padding: 4px 16px; cursor: pointer; font-size: 13px; }
+    .filter-btn.active { background: white; color: #1a6fd4; font-weight: bold; }
+    .container { padding: 20px 16px; max-width: 800px; margin: auto; }
+    .card { background: white; border-radius: 12px; padding: 16px 20px; margin-bottom: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); cursor: pointer; }
+    .card h3 { color: #1a6fd4; font-size: 16px; margin-bottom: 4px; }
+    .card .subtype { color: #555; font-size: 13px; margin-bottom: 8px; }
+    .card .details { display: none; margin-top: 10px; border-top: 1px solid #eee; padding-top: 10px; }
+    .card.open .details { display: block; }
+    .label { font-weight: bold; color: #333; margin-top: 8px; font-size: 13px; }
+    .value { color: #444; font-size: 13px; white-space: pre-wrap; margin-top: 4px; }
+    .no-data { text-align: center; color: #888; margin-top: 40px; font-size: 15px; }
+  </style>
+</head>
+<body>
+<header>
+  <h1>⚡ Volt Support <span>Pro</span>
+    <span class="live-badge"><span class="live-dot"></span>LIVE</span>
+  </h1>
+  <input type="text" id="searchBox" placeholder="Search issues..." oninput="renderCards()"/>
+  <div class="filters" id="filters"></div>
+</header>
+<div class="container" id="cardContainer">
+  <p class="no-data">Loading...</p>
+</div>
+<script>
+  let allData = [];
+  let activeFilter = 'All';
+
+  async function loadData() {
+    try {
+      const res = await fetch('/api/sheet');
+      allData = await res.json();
+      buildFilters();
+      renderCards();
+    } catch(e) {
+      document.getElementById('cardContainer').innerHTML = '<p class="no-data">Error loading data.</p>';
+    }
+  }
+
+  function buildFilters() {
+    const types = ['All', ...new Set(allData.map(d => d.type).filter(Boolean))];
+    const container = document.getElementById('filters');
+    container.innerHTML = types.map(t =>
+      `<button class="filter-btn ${t === 'All' ? 'active' : ''}" onclick="setFilter('${t}')">${t}</button>`
+    ).join('');
+  }
+
+  function setFilter(type) {
+    activeFilter = type;
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.textContent === type);
+    });
+    renderCards();
+  }
+
+  function renderCards() {
+    const query = document.getElementById('searchBox').value.toLowerCase();
+    const container = document.getElementById('cardContainer');
+    let filtered = allData.filter(d => {
+      const matchFilter = activeFilter === 'All' || d.type === activeFilter;
+      const matchSearch = !query ||
+        (d.type||'').toLowerCase().includes(query) ||
+        (d.subType||'').toLowerCase().includes(query) ||
+        (d.preChecks||'').toLowerCase().includes(query) ||
+        (d.escalationPath||'').toLowerCase().includes(query);
+      return matchFilter && matchSearch;
+    });
+    if (filtered.length === 0) {
+      container.innerHTML = '<p class="no-data">No results found.</p>';
+      return;
+    }
+    container.innerHTML = filtered.map(d => `
+      <div class="card" onclick="this.classList.toggle('open')">
+        <h3>${d.type || 'N/A'}</h3>
+        <div class="subtype">${d.subType || ''}</div>
+        <div class="details">
+          <div class="label">📋 Pre-checks:</div>
+          <div class="value">${d.preChecks || 'N/A'}</div>
+          <div class="label">🔺 Escalation Path:</div>
+          <div class="value">${d.escalationPath || 'N/A'}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  loadData();
+</script>
+</body>
+</html>
 
