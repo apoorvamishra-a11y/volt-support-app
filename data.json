@@ -1,1 +1,9 @@
+[
+  {
+    "type": "Repayment Issues",
+    "subType": "Amount paid but POS not updated in app / Deducted from customer but status requested in Appsmith",
+    "preChecks": "1) Paid from own account: Verify payment details and update the status\n2) Third-party Payment: For DSP Users: Request the user to send an email from their registered email ID to support@voltmoney.in with supporting documents (proof of relationship if the user is made the repayment from his wife's account and vice versa and Aadhaar card if the user is made the repayment from father's account and vice versa). The repayment amount will be accounted for within 24 hours; otherwise, it will be reversed to the source bank account.\n\nFor TATA: No thirdparty repayment will be accepted. If any user is already made and reached out, Ask the user to drop an email to support@voltmoney.in from their registered email id along with the bank statement and cancelled cheque from which they have made a repayment and raise a Zendesk ticket, the amount will be reversed to their account.\n\n- Need to collect a Cancelled cheque for accounting purposes if the payment was made from a joint account.\n- A bank statement and cancelled cheque are required if the payment was made from a third-party account for refund processing.\n3) Bank transfer: Account to account transfer - The repayment accounting TAT is 1-2 Business days\n4) Online Banking (UPI, Debit card and Net banking): Expected TAT - 10 mins (within Business Hours)",
+    "escalationPath": "Raise Zendesk Ticket if TAT is crossed"
+  }
+]
 
