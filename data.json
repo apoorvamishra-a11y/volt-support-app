@@ -2,50 +2,64 @@ const https = require('https');
 
 const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTPr5ISAwyjMS34b5bGr-62D8CymWBRERe9P17NBFq90om0jViqbb0ubIxhq8m1zw/pub?gid=492068491&single=true&output=csv';
 
-module.exports = (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+function fetchWithRedirect(url, redirectCount = 0) {
+  return new Promise((resolve, reject) => {
+    if (redirectCount > 5) return reject(new Error('Too many redirects'));
 
-  https.get(SHEET_URL, (response) => {
-    let raw = '';
-    response.on('data', chunk => raw += chunk);
-    response.on('end', () => {
-      try {
-        const lines = raw.trim().split('\n');
-        const headers = lines[0].split(',').map(h => h.replace(/^"|"$/g, '').trim());
-        const result = [];
-
-        for (let i = 1; i < lines.length; i++) {
-          const line = lines[i];
-          const values = [];
-          let current = '';
-          let inQuotes = false;
-
-          for (let c = 0; c < line.length; c++) {
-            if (line[c] === '"') {
-              inQuotes = !inQuotes;
-            } else if (line[c] === ',' && !inQuotes) {
-              values.push(current.trim());
-              current = '';
-            } else {
-              current += line[c];
-            }
-          }
-          values.push(current.trim());
-
-          const obj = {};
-          headers.forEach((h, idx) => {
-            obj[h] = (values[idx] || '').replace(/^"|"$/g, '').trim();
-          });
-
-          if (obj.type || obj.subType) result.push(obj);
-        }
-
-        res.status(200).json(result);
-      } catch(e) {
-        res.status(500).json({ error: 'Parsing failed: ' + e.message });
+    https.get(url, (response) => {
+      if (response.statusCode === 301 || response.statusCode === 302 || response.statusCode === 307) {
+        return resolve(fetchWithRedirect(response.headers.location, redirectCount + 1));
       }
-    });
-  }).on('error', (e) => {
-    res.status(500).json({ error: 'Fetch failed: ' + e.message });
+
+      let raw = '';
+      response.on('data', chunk => raw += chunk);
+      response.on('end', () => resolve(raw));
+      response.on('error', reject);
+    }).on('error', reject);
   });
+}
+
+function parseCSV(raw) {
+  const lines = raw.trim().split('\n');
+  const headers = lines[0].split(',').map(h => h.replace(/^"|"$/g, '').trim());
+  const result = [];
+
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i];
+    const values = [];
+    let current = '';
+    let inQuotes = false;
+
+    for (let c = 0; c < line.length; c++) {
+      if (line[c] === '"') {
+        inQuotes = !inQuotes;
+      } else if (line[c] === ',' && !inQuotes) {
+        values.push(current.trim());
+        current = '';
+      } else {
+        current += line[c];
+      }
+    }
+    values.push(current.trim());
+
+    const obj = {};
+    headers.forEach((h, idx) => {
+      obj[h] = (values[idx] || '').replace(/^"|"$/g, '').trim();
+    });
+
+    if (obj.type || obj.subType) result.push(obj);
+  }
+
+  return result;
+}
+
+module.exports = async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  try {
+    const raw = await fetchWithRedirect(SHEET_URL);
+    const data = parseCSV(raw);
+    res.status(200).json(data);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
 };
