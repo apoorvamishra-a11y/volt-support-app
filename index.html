@@ -8,104 +8,214 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Segoe UI', sans-serif; background: #f5f6fa; color: #1a1a2e; }
 
+    /* ── HEADER ── */
     header {
-      background: #2f3ac7; padding: 12px 24px;
-      position: sticky; top: 0; z-index: 100;
-      display: flex; align-items: center;
+      background: #2f3ac7;
+      padding: 12px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
     }
     .logo { display: flex; align-items: center; gap: 12px; }
     .logo-icon {
-      width: 40px; height: 40px; background: white; border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
+      width: 40px; height: 40px;
+      background: white; border-radius: 10px;
+      display: flex; align-items: center;
+      justify-content: center;
       font-weight: 900; font-size: 20px; color: #2f3ac7;
     }
     .logo-title { color: white; font-size: 20px; font-weight: 700; }
     .yellow { color: #f5c518; }
     .logo-sub { color: rgba(255,255,255,0.6); font-size: 10px; letter-spacing: 2px; }
 
+    /* ── LAYOUT ── */
     .layout { display: flex; height: calc(100vh - 65px); overflow: hidden; }
 
+    /* ── SIDEBAR ── */
     .sidebar {
-      width: 265px; background: white;
+      width: 265px;
+      background: white;
       border-right: 1px solid #e8e8f0;
-      overflow-y: auto; flex-shrink: 0; padding-bottom: 20px;
+      overflow-y: auto;
+      flex-shrink: 0;
+      padding-bottom: 24px;
     }
-    .search-wrap { padding: 14px 12px; }
+    .search-wrap { padding: 14px 12px; border-bottom: 1px solid #f0f0f0; }
     .search-wrap input {
       width: 100%; padding: 9px 12px;
       border: 1px solid #ddd; border-radius: 8px;
-      font-size: 13px; outline: none;
+      font-size: 13px; outline: none; color: #333;
     }
     .search-wrap input:focus { border-color: #2f3ac7; }
 
+    /* ── LOAN SECTION LABEL ── */
     .loan-label {
-      font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
-      color: #2f3ac7; padding: 14px 16px 6px;
-      text-transform: uppercase; border-top: 1px solid #e8e8f0; margin-top: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 16px 16px 8px;
+      color: #888;
+      border-top: 1px solid #f0f0f0;
+      margin-top: 4px;
     }
-    .loan-label:first-child { border-top: none; margin-top: 0; }
+    .loan-label span.dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+    .dot-pre  { background: #f5c518; }
+    .dot-post { background: #2f3ac7; }
 
+    /* ── TYPE ITEMS ── */
     .type-item {
-      padding: 10px 16px; cursor: pointer; font-size: 13px;
-      font-weight: 500; border-radius: 6px; margin: 2px 8px;
-      transition: all 0.2s; color: #444;
+      padding: 10px 16px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      border-radius: 8px;
+      margin: 2px 8px;
+      transition: background 0.15s, color 0.15s;
+      color: #444;
     }
     .type-item:hover { background: #f0f2ff; color: #2f3ac7; }
     .type-item.active { background: #2f3ac7; color: white; }
 
-    .main { flex: 1; overflow-y: auto; padding: 28px; background: #f5f6fa; }
+    /* ── MAIN CONTENT ── */
+    .main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 32px 28px;
+      background: #f5f6fa;
+    }
 
-    .welcome { text-align: center; margin-top: 80px; color: #888; }
-    .welcome h2 { font-size: 22px; margin-bottom: 8px; color: #444; }
+    /* ── WELCOME ── */
+    .welcome {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      height: 70%; text-align: center; color: #aaa;
+    }
+    .welcome-icon { font-size: 48px; margin-bottom: 16px; }
+    .welcome h2 { font-size: 20px; color: #555; margin-bottom: 8px; font-weight: 600; }
+    .welcome p { font-size: 14px; }
 
-    .screen-title { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #999; margin-bottom: 6px; }
-    .screen-heading { font-size: 22px; font-weight: 700; color: #1a1a2e; margin-bottom: 20px; }
+    /* ── SCREEN LABELS ── */
+    .screen-breadcrumb {
+      font-size: 12px; color: #aaa;
+      margin-bottom: 4px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .screen-heading {
+      font-size: 22px; font-weight: 700;
+      color: #1a1a2e; margin-bottom: 22px;
+      line-height: 1.3;
+    }
 
+    /* ── BACK BUTTON ── */
     .back-btn {
       display: inline-flex; align-items: center; gap: 6px;
-      font-size: 13px; color: #2f3ac7; cursor: pointer;
-      margin-bottom: 18px; font-weight: 500;
+      font-size: 13px; color: #2f3ac7;
+      cursor: pointer; margin-bottom: 20px;
+      font-weight: 600; width: fit-content;
     }
     .back-btn:hover { text-decoration: underline; }
 
-    .subtype-list { display: flex; flex-direction: column; gap: 10px; }
+    /* ── SUBTYPE LIST ── */
+    .subtype-list { display: flex; flex-direction: column; gap: 10px; max-width: 720px; }
     .subtype-card {
-      background: white; border: 1px solid #e8e8f0;
-      border-radius: 10px; padding: 16px 20px; cursor: pointer;
-      display: flex; justify-content: space-between; align-items: center;
-      transition: all 0.2s; font-size: 14px; font-weight: 500; color: #1a1a2e;
+      background: white;
+      border: 1.5px solid #e8e8f0;
+      border-radius: 12px;
+      padding: 16px 20px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.18s;
+      font-size: 14px;
+      font-weight: 500;
+      color: #1a1a2e;
     }
-    .subtype-card:hover { border-color: #2f3ac7; background: #f0f2ff; color: #2f3ac7; }
-    .subtype-card .arrow { font-size: 18px; color: #aaa; }
+    .subtype-card:hover {
+      border-color: #2f3ac7;
+      background: #f0f2ff;
+      color: #2f3ac7;
+      transform: translateX(3px);
+    }
+    .subtype-card .arrow {
+      font-size: 20px; color: #ccc;
+      transition: color 0.18s;
+      flex-shrink: 0;
+    }
     .subtype-card:hover .arrow { color: #2f3ac7; }
 
-    .detail-view { max-width: 760px; }
+    /* ── DETAIL VIEW ── */
+    .detail-view { max-width: 740px; }
+
     .detail-section {
-      background: white; border-radius: 12px;
-      padding: 20px 24px; margin-bottom: 16px; border: 1px solid #e8e8f0;
+      background: white;
+      border-radius: 12px;
+      padding: 22px 24px;
+      margin-bottom: 16px;
+      border: 1.5px solid #e8e8f0;
     }
-    .detail-section h3 {
-      font-size: 12px; text-transform: uppercase;
-      letter-spacing: 1px; margin-bottom: 12px;
+    .detail-section-title {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
-    .badge-pre { color: #2f3ac7; }
-    .badge-esc { color: #e74c3c; }
+    .title-pre  { color: #2f3ac7; }
+    .title-esc  { color: #e74c3c; }
+
     .detail-section p {
-      font-size: 14px; line-height: 1.8; color: #444; white-space: pre-wrap;
+      font-size: 14px;
+      line-height: 1.9;
+      color: #444;
+      white-space: pre-wrap;
     }
 
+    /* ── SEARCH RESULTS ── */
     .search-result-item {
-      background: white; border: 1px solid #e8e8f0;
-      border-radius: 10px; padding: 14px 18px;
-      margin-bottom: 10px; cursor: pointer; transition: all 0.2s;
+      background: white;
+      border: 1.5px solid #e8e8f0;
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.18s;
+      max-width: 720px;
     }
     .search-result-item:hover { border-color: #2f3ac7; background: #f0f2ff; }
-    .res-type { font-size: 11px; color: #2f3ac7; font-weight: 600; text-transform: uppercase; margin-bottom: 4px; }
+    .res-type {
+      font-size: 10px; color: #2f3ac7;
+      font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1px; margin-bottom: 4px;
+    }
     .res-sub { font-size: 14px; font-weight: 500; color: #1a1a2e; }
+    .res-tag {
+      display: inline-block; margin-top: 6px;
+      font-size: 10px; font-weight: 700;
+      padding: 2px 8px; border-radius: 20px;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .res-tag-pre  { background: #fff8e1; color: #d4a000; }
+    .res-tag-post { background: #eef0ff; color: #2f3ac7; }
   </style>
 </head>
 <body>
 
+  <!-- HEADER -->
   <header>
     <div class="logo">
       <div class="logo-icon">V</div>
@@ -116,55 +226,86 @@
     </div>
   </header>
 
+  <!-- LAYOUT -->
   <div class="layout">
+
+    <!-- SIDEBAR -->
     <aside class="sidebar">
       <div class="search-wrap">
         <input type="text" id="searchInput" placeholder="🔍 Search issues..." />
       </div>
       <nav id="categoryNav"></nav>
     </aside>
+
+    <!-- MAIN -->
     <main class="main" id="mainContent">
       <div class="welcome">
-        <h2>Welcome to Volt Money Support Manual</h2>
+        <div class="welcome-icon">📋</div>
+        <h2>Volt Money Support Manual</h2>
         <p>Select a category from the left panel to get started.</p>
       </div>
     </main>
+
   </div>
 
   <script>
     let allData = [];
 
+    // ── INIT ──────────────────────────────────────────
     document.addEventListener('DOMContentLoaded', () => {
-      fetchData();
+      loadData();
       document.getElementById('searchInput').addEventListener('input', onSearch);
     });
 
-    async function fetchData() {
+    // ── FETCH DATA ────────────────────────────────────
+    async function loadData() {
       try {
         const res = await fetch('/api/sheet');
+        if (!res.ok) throw new Error('API error');
         allData = await res.json();
         buildSidebar();
-      } catch (e) {
+      } catch (err) {
         document.getElementById('mainContent').innerHTML =
-          `<p style="color:red;padding:20px">Error loading data.</p>`;
+          `<p style="color:#e74c3c;padding:24px;font-size:14px">
+            ⚠️ Error loading data. Please try refreshing.
+          </p>`;
       }
     }
 
+    // ── BUILD SIDEBAR ─────────────────────────────────
     function buildSidebar() {
       const nav = document.getElementById('categoryNav');
       nav.innerHTML = '';
-      const types = [...new Set(allData.map(d => d.type).filter(Boolean))];
-      const preTypes  = types.filter(t => allData.find(d => d.type === t && d.loanCategory === 'pre'));
-      const postTypes = types.filter(t => allData.find(d => d.type === t && d.loanCategory === 'post'));
 
-      if (preTypes.length) {
-        nav.innerHTML += `<div class="loan-label">🔵 Pre Loan</div>`;
+      // Get unique types grouped by loanCategory
+      const preTypes  = getUniqueTypes('pre');
+      const postTypes = getUniqueTypes('post');
+
+      if (preTypes.length > 0) {
+        nav.appendChild(makeLoanLabel('Pre Loan', 'pre'));
         preTypes.forEach(t => nav.appendChild(makeTypeItem(t)));
       }
-      if (postTypes.length) {
-        nav.innerHTML += `<div class="loan-label">🟢 Post Loan</div>`;
+
+      if (postTypes.length > 0) {
+        nav.appendChild(makeLoanLabel('Post Loan', 'post'));
         postTypes.forEach(t => nav.appendChild(makeTypeItem(t)));
       }
+    }
+
+    function getUniqueTypes(category) {
+      const seen = new Set();
+      return allData
+        .filter(d => d.loanCategory === category && d.type)
+        .map(d => d.type)
+        .filter(t => { if (seen.has(t)) return false; seen.add(t); return true; });
+    }
+
+    function makeLoanLabel(label, category) {
+      const div = document.createElement('div');
+      div.className = 'loan-label';
+      const dotClass = category === 'pre' ? 'dot-pre' : 'dot-post';
+      div.innerHTML = `<span class="dot ${dotClass}"></span>${label}`;
+      return div;
     }
 
     function makeTypeItem(type) {
@@ -175,77 +316,120 @@
       return div;
     }
 
+    // ── SCREEN 2: SUB TYPES ───────────────────────────
     function showSubTypes(type) {
+      // Set active in sidebar
       document.querySelectorAll('.type-item').forEach(el => {
         el.classList.toggle('active', el.textContent === type);
       });
+
       const subtypes = allData.filter(d => d.type === type);
       const main = document.getElementById('mainContent');
+
       main.innerHTML = `
-        <div class="screen-title">Select an Issue</div>
+        <div class="screen-breadcrumb">All Categories › ${type}</div>
         <div class="screen-heading">${type}</div>
-        <div class="subtype-list">
-          ${subtypes.map((item, i) => `
-            <div class="subtype-card" data-index="${i}">
-              <span>${item.subType || 'Unnamed Issue'}</span>
-              <span class="arrow">›</span>
-            </div>`).join('')}
-        </div>`;
-      main.querySelectorAll('.subtype-card').forEach(card => {
-        card.addEventListener('click', () => showDetail(subtypes[+card.dataset.index], type));
+        <div class="subtype-list" id="subtypeList"></div>
+      `;
+
+      const list = document.getElementById('subtypeList');
+      subtypes.forEach((item, i) => {
+        const card = document.createElement('div');
+        card.className = 'subtype-card';
+        card.innerHTML = `
+          <span>${item.subType || 'Unnamed Issue'}</span>
+          <span class="arrow">›</span>
+        `;
+        card.addEventListener('click', () => showDetail(item, type));
+        list.appendChild(card);
       });
     }
 
+    // ── SCREEN 3: DETAIL VIEW ─────────────────────────
     function showDetail(item, parentType) {
       const main = document.getElementById('mainContent');
+      const isPreLoan = item.loanCategory === 'pre';
+
       main.innerHTML = `
         <div class="back-btn" id="backBtn">← Back to ${parentType}</div>
         <div class="detail-view">
-          <div class="screen-title">${parentType}</div>
+          <div class="screen-breadcrumb">
+            ${isPreLoan ? 'Pre Loan' : 'Post Loan'} › ${parentType}
+          </div>
           <div class="screen-heading">${item.subType || ''}</div>
+
           <div class="detail-section">
-            <h3 class="badge-pre">✅ Pre-Checks</h3>
+            <div class="detail-section-title title-pre">
+              ✅ Pre-Checks
+            </div>
             <p>${item.preChecks || 'No pre-checks listed.'}</p>
           </div>
+
           <div class="detail-section">
-            <h3 class="badge-esc">🚨 Escalation Path</h3>
+            <div class="detail-section-title title-esc">
+              🚨 Escalation Path
+            </div>
             <p>${item.escalationPath || 'No escalation path listed.'}</p>
           </div>
-        </div>`;
-      document.getElementById('backBtn').addEventListener('click', () => showSubTypes(parentType));
+        </div>
+      `;
+
+      document.getElementById('backBtn')
+        .addEventListener('click', () => showSubTypes(parentType));
     }
 
+    // ── SEARCH ────────────────────────────────────────
     function onSearch(e) {
       const q = e.target.value.trim().toLowerCase();
       if (!q) { buildSidebar(); showWelcome(); return; }
+
       const results = allData.filter(d =>
-        (d.type || '').toLowerCase().includes(q) ||
-        (d.subType || '').toLowerCase().includes(q) ||
-        (d.preChecks || '').toLowerCase().includes(q)
+        (d.type       || '').toLowerCase().includes(q) ||
+        (d.subType    || '').toLowerCase().includes(q) ||
+        (d.preChecks  || '').toLowerCase().includes(q) ||
+        (d.escalationPath || '').toLowerCase().includes(q)
       );
+
       const main = document.getElementById('mainContent');
       if (!results.length) {
-        main.innerHTML = `<p style="padding:20px;color:#888">No results found for "<b>${q}</b>"</p>`;
+        main.innerHTML = `
+          <p style="padding:24px;color:#aaa;font-size:14px">
+            No results found for "<b style="color:#333">${q}</b>"
+          </p>`;
         return;
       }
+
       main.innerHTML = `
-        <div class="screen-heading">Results for "${q}"</div>
-        ${results.map((item, i) => `
-          <div class="search-result-item" data-index="${i}">
-            <div class="res-type">${item.type || ''}</div>
-            <div class="res-sub">${item.subType || ''}</div>
-          </div>`).join('')}`;
-      main.querySelectorAll('.search-result-item').forEach(card => {
-        card.addEventListener('click', () => {
-          showDetail(results[+card.dataset.index], results[+card.dataset.index].type);
-        });
+        <div class="screen-heading">Results for "${q}"
+          <span style="font-size:14px;color:#aaa;font-weight:400">
+            — ${results.length} found
+          </span>
+        </div>
+        <div id="searchResults"></div>
+      `;
+
+      const container = document.getElementById('searchResults');
+      results.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'search-result-item';
+        const tagClass = item.loanCategory === 'pre' ? 'res-tag-pre' : 'res-tag-post';
+        const tagLabel = item.loanCategory === 'pre' ? 'Pre Loan' : 'Post Loan';
+        card.innerHTML = `
+          <div class="res-type">${item.type || ''}</div>
+          <div class="res-sub">${item.subType || ''}</div>
+          <span class="res-tag ${tagClass}">${tagLabel}</span>
+        `;
+        card.addEventListener('click', () => showDetail(item, item.type));
+        container.appendChild(card);
       });
     }
 
+    // ── WELCOME ───────────────────────────────────────
     function showWelcome() {
       document.getElementById('mainContent').innerHTML = `
         <div class="welcome">
-          <h2>Welcome to Volt Money Support Manual</h2>
+          <div class="welcome-icon">📋</div>
+          <h2>Volt Money Support Manual</h2>
           <p>Select a category from the left panel to get started.</p>
         </div>`;
     }
