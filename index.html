@@ -122,21 +122,32 @@
     .sidebar-divider { height: 1px; background: #e8e8e8; margin: 8px 14px; }
 
     .content {
-      flex: 1;
-      overflow-y: auto;
-      padding: 28px;
-    }
+  flex: 1;
+  overflow: hidden;   /* ← Yeh change karo */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
 
-    .welcome {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-      text-align: center;
-    }
+.welcome {
+  position: absolute;   /* ← Yeh add karo */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
 
-    .welcome-box {
+.content-inner {
+  flex: 1;
+  overflow-y: auto;
+  padding: 28px;
+}
+   .welcome-box {
       background: rgba(60, 60, 70, 0.62);
       border-radius: 16px;
       padding: 36px 48px;
