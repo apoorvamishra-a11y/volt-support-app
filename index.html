@@ -9,8 +9,8 @@
 
     body {
       font-family: 'Segoe UI', sans-serif;
-      background-image: url('voltbg.jpg');
-      background-size: cover;          /* ✅ FIX 4 — normal fit */
+      background-image: url('Newvoltbg.jpg');
+      background-size: cover;
       background-position: center center;
       background-repeat: no-repeat;
       background-attachment: fixed;
@@ -19,7 +19,6 @@
       flex-direction: column;
     }
 
-    /* ✅ HEADER WITH LOGO */
     .header {
       background: #2f3ac7;
       color: white;
@@ -46,15 +45,13 @@
     .header h1 { font-size: 18px; font-weight: 700; }
     .header span { font-size: 13px; opacity: 0.8; }
 
-    /* MAIN LAYOUT — fills remaining height */
     .main-layout {
       display: flex;
       flex: 1;
       overflow: hidden;
-      height: calc(100vh - 56px); /* only header height */
+      height: calc(100vh - 56px);
     }
 
-    /* ✅ SIDEBAR — fixed width, has its own scroll + search */
     .sidebar {
       width: 270px;
       min-width: 270px;
@@ -65,7 +62,6 @@
       overflow: hidden;
     }
 
-    /* ✅ FIX 2 — Search only inside sidebar */
     .sidebar-search {
       padding: 10px 12px;
       border-bottom: 1px solid #e0e0e0;
@@ -85,7 +81,6 @@
       box-shadow: 0 0 0 3px rgba(47,58,199,0.15);
     }
 
-    /* ✅ FIX 1 — Sidebar items scroll independently */
     .sidebar-items {
       flex: 1;
       overflow-y: auto;
@@ -126,14 +121,12 @@
     .dot-post { background: #2f3ac7; }
     .sidebar-divider { height: 1px; background: #e8e8e8; margin: 8px 14px; }
 
-    /* CONTENT AREA */
     .content {
       flex: 1;
       overflow-y: auto;
       padding: 28px;
     }
 
-    /* ✅ FIX 1 — Welcome stays centered in content area only */
     .welcome {
       display: flex;
       flex-direction: column;
@@ -143,7 +136,6 @@
       text-align: center;
     }
 
-    /* ✅ FIX 3 — Welcome box with mid-gray background */
     .welcome-box {
       background: rgba(60, 60, 70, 0.62);
       border-radius: 16px;
@@ -281,38 +273,29 @@
 </head>
 <body>
 
-  <!-- ✅ HEADER WITH LOGO -->
   <div class="header">
     <div class="header-left">
-      <img src="voltlogo.png" alt="Volt Logo" class="header-logo" />
+      <!-- ✅ UPDATED LOGO FILE NAME -->
+      <img src="Volt Logo.png" alt="Volt Logo" class="header-logo" />
       <h1>Volt Money — Support Manual</h1>
     </div>
     <span>Internal Use Only</span>
   </div>
 
-  <!-- MAIN LAYOUT -->
   <div class="main-layout">
 
-    <!-- ✅ SIDEBAR WITH SEARCH INSIDE -->
     <div class="sidebar">
-
-      <!-- ✅ FIX 2 — Search only in sidebar -->
       <div class="sidebar-search">
         <input type="text" id="searchInput"
           placeholder="🔍 Search..."
           oninput="handleSearch()" />
       </div>
-
-      <!-- ✅ FIX 1 — Only items scroll, search stays fixed -->
       <div class="sidebar-items" id="sidebar">
         <div style="padding:20px;color:#999;font-size:13px;">Loading...</div>
       </div>
-
     </div>
 
-    <!-- CONTENT AREA -->
     <div class="content" id="content">
-      <!-- ✅ FIX 1 + 3 — Welcome stable + gray box -->
       <div class="welcome">
         <div class="welcome-box">
           <h2>👋 Welcome to Support Manual</h2>
