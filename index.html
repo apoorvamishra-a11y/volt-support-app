@@ -270,6 +270,47 @@
 
     async function loadData() {
   try {
+    const res = await fetch('https://script.google.com/macros/s/AKfycbx2VehiToTYcCiFwzsUZZee0lRQv-H-8Bbd2huvReIKBWUv6SCw1zZ34-YDNHBhArjm/exec');
+    if (!res.ok) throw new Error('API error');
+    const raw = await res.json();
+
+    const PRE_LOAN_TYPES = [
+      'login & mobile number registration',
+      'kyc issue'
+    ];
+
+    // Empty rows filter karo
+    const clean = raw.filter(row =>
+      (row['Type'] && row['Type'].trim() !== '') ||
+      (row['Sub Type'] && row['Sub Type'].trim() !== '')
+    );
+
+    // Merged cells fix + column names map karo
+    let lastType = '';
+    allData = clean.map(row => {
+      if (row['Type'] && row['Type'].trim() !== '') {
+        lastType = row['Type'].trim();
+      }
+      const type = lastType;
+      return {
+        type: type,
+        subType: (row['Sub Type'] || '').trim(),
+        preChecks: (row['Pre-checks'] || '').trim(),
+        escalationPath: (row['Escalation Path'] || '').trim(),
+        loanCategory: PRE_LOAN_TYPES.includes(type.toLowerCase().trim()) ? 'pre' : 'post'
+      };
+    });
+
+    buildSidebar();
+  } catch (err) {
+    document.getElementById('mainContent').innerHTML =
+      `<p style="color:#e74c3c;padding:24px;font-size:14px">
+        ⚠️ Error loading data. Please try refreshing.
+      </p>`;
+  }
+}
+
+  try {
     const res = await fetch('https://script.google.com/...');
         if (!res.ok) throw new Error('API error');
         allData = await res.json();
