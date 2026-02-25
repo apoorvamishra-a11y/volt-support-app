@@ -7,18 +7,23 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    body {
+    html, body {
+      height: 100%;
+      overflow: hidden; /* ✅ Body khud scroll nahi karegi */
       font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
       background-image: url('Newvoltbg.jpg');
       background-size: cover;
       background-position: center center;
       background-repeat: no-repeat;
       background-attachment: fixed;
-      min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
 
+    /* HEADER */
     .header {
       background: #2f3ac7;
       color: white;
@@ -27,10 +32,8 @@
       align-items: center;
       justify-content: space-between;
       box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      position: sticky;
-      top: 0;
-      z-index: 100;
       height: 56px;
+      flex-shrink: 0; /* ✅ Header size fix rahega */
     }
     .header-left {
       display: flex;
@@ -45,13 +48,14 @@
     .header h1 { font-size: 18px; font-weight: 700; }
     .header span { font-size: 13px; opacity: 0.8; }
 
+    /* ✅ MAIN LAYOUT — fixed height, no overflow on parent */
     .main-layout {
       display: flex;
-      flex: 1;
-      overflow: hidden;
       height: calc(100vh - 56px);
+      overflow: hidden; /* ✅ Parent scroll band */
     }
 
+    /* ✅ SIDEBAR — apna khud ka scroll */
     .sidebar {
       width: 270px;
       min-width: 270px;
@@ -59,6 +63,7 @@
       border-right: 1px solid #e0e0e0;
       display: flex;
       flex-direction: column;
+      height: 100%; /* ✅ Poori height */
       overflow: hidden;
     }
 
@@ -81,9 +86,10 @@
       box-shadow: 0 0 0 3px rgba(47,58,199,0.15);
     }
 
+    /* ✅ SIRF SIDEBAR ITEMS SCROLL KAREIN */
     .sidebar-items {
       flex: 1;
-      overflow-y: auto;
+      overflow-y: auto; /* ✅ Sidebar ka apna scroll */
       padding: 10px 0;
     }
 
@@ -96,7 +102,6 @@
       padding: 10px 18px 6px;
       margin-top: 4px;
     }
-
     .sidebar-item {
       display: flex;
       align-items: center;
@@ -115,39 +120,31 @@
       font-weight: 600;
       border-left: 3px solid #2f3ac7;
     }
-
     .dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
     .dot-pre  { background: #f5c518; }
     .dot-post { background: #2f3ac7; }
     .sidebar-divider { height: 1px; background: #e8e8e8; margin: 8px 14px; }
 
-    .content {
-  flex: 1;
-  overflow: hidden;   /* ← Yeh change karo */
-  position: relative;
-  display: flex;
-  flex-direction: column;
-}
+    /* ✅ RIGHT SIDE — completely independent */
+    .content-wrapper {
+      flex: 1;
+      position: relative;
+      height: 100%;
+      overflow: hidden;
+    }
 
-.welcome {
-  position: absolute;   /* ← Yeh add karo */
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-}
-
-.content-inner {
-  flex: 1;
-  overflow-y: auto;
-  padding: 28px;
-}
-   .welcome-box {
+    /* ✅ WELCOME — fixed center, never moves */
+    .welcome {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      z-index: 1;
+    }
+    .welcome-box {
       background: rgba(60, 60, 70, 0.62);
       border-radius: 16px;
       padding: 36px 48px;
@@ -164,6 +161,15 @@
     .welcome-box p {
       font-size: 15px;
       color: rgba(255,255,255,0.85);
+    }
+
+    /* ✅ CONTENT INNER — apna khud ka scroll, sidebar se bilkul alag */
+    .content-inner {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      overflow-y: auto; /* ✅ Sirf right side scroll karega */
+      padding: 28px;
+      display: none;
     }
 
     .screen-title {
@@ -286,7 +292,6 @@
 
   <div class="header">
     <div class="header-left">
-      <!-- ✅ UPDATED LOGO FILE NAME -->
       <img src="Volt Logo.png" alt="Volt Logo" class="header-logo" />
       <h1>Volt Money — Support Manual</h1>
     </div>
@@ -295,6 +300,7 @@
 
   <div class="main-layout">
 
+    <!-- LEFT SIDEBAR -->
     <div class="sidebar">
       <div class="sidebar-search">
         <input type="text" id="searchInput"
@@ -306,13 +312,20 @@
       </div>
     </div>
 
-    <div class="content" id="content">
-      <div class="welcome">
+    <!-- ✅ RIGHT SIDE — completely independent from sidebar -->
+    <div class="content-wrapper">
+
+      <!-- Welcome screen — fixed center -->
+      <div class="welcome" id="welcomeScreen">
         <div class="welcome-box">
           <h2>👋 Welcome to Support Manual</h2>
           <p>Select a category from the left to get started.</p>
         </div>
       </div>
+
+      <!-- Content screen — own scroll -->
+      <div class="content-inner" id="contentInner"></div>
+
     </div>
 
   </div>
@@ -322,6 +335,20 @@
 
     let allData = [];
     let currentType = null;
+
+    function showWelcome() {
+      document.getElementById('welcomeScreen').style.display = 'flex';
+      document.getElementById('contentInner').style.display = 'none';
+      document.getElementById('contentInner').innerHTML = '';
+    }
+
+    function showContent(html) {
+      document.getElementById('welcomeScreen').style.display = 'none';
+      const inner = document.getElementById('contentInner');
+      inner.style.display = 'block';
+      inner.innerHTML = html;
+      inner.scrollTop = 0; // ✅ Har baar top se shuru
+    }
 
     async function fetchData() {
       try {
@@ -398,7 +425,7 @@
       });
 
       html += `</div>`;
-      document.getElementById('content').innerHTML = html;
+      showContent(html);
     }
 
     function showDetail(index) {
@@ -420,7 +447,7 @@
         html += `<div class="detail-card"><h3>📝 Extra Details</h3><p>${row.extraDetails}</p></div>`;
       }
 
-      document.getElementById('content').innerHTML = html;
+      showContent(html);
     }
 
     function handleSearch() {
@@ -429,13 +456,7 @@
       if (!q) {
         currentType = null;
         buildSidebar();
-        document.getElementById('content').innerHTML = `
-          <div class="welcome">
-            <div class="welcome-box">
-              <h2>👋 Welcome to Support Manual</h2>
-              <p>Select a category from the left to get started.</p>
-            </div>
-          </div>`;
+        showWelcome();
         return;
       }
 
@@ -465,7 +486,7 @@
         });
       }
 
-      document.getElementById('content').innerHTML = html;
+      showContent(html);
     }
 
     function escQ(str) {
