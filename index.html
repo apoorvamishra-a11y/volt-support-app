@@ -18,7 +18,6 @@
       flex-direction: column;
     }
 
-    /* HEADER */
     .header {
       background: #2f3ac7;
       color: white;
@@ -31,17 +30,9 @@
       top: 0;
       z-index: 100;
     }
-    .header h1 {
-      font-size: 20px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-    }
-    .header span {
-      font-size: 13px;
-      opacity: 0.8;
-    }
+    .header h1 { font-size: 20px; font-weight: 700; }
+    .header span { font-size: 13px; opacity: 0.8; }
 
-    /* SEARCH BAR */
     .search-container {
       background: rgba(255,255,255,0.95);
       padding: 10px 20px;
@@ -54,13 +45,11 @@
       border-radius: 25px;
       font-size: 14px;
       outline: none;
-      transition: 0.2s;
     }
     .search-container input:focus {
       box-shadow: 0 0 0 3px rgba(47,58,199,0.15);
     }
 
-    /* MAIN LAYOUT */
     .main-layout {
       display: flex;
       flex: 1;
@@ -68,7 +57,6 @@
       height: calc(100vh - 110px);
     }
 
-    /* SIDEBAR */
     .sidebar {
       width: 270px;
       min-width: 270px;
@@ -77,6 +65,7 @@
       overflow-y: auto;
       padding: 16px 0;
     }
+
     .sidebar-section-title {
       font-size: 11px;
       font-weight: 700;
@@ -86,6 +75,7 @@
       padding: 10px 18px 6px;
       margin-top: 8px;
     }
+
     .sidebar-item {
       display: flex;
       align-items: center;
@@ -97,33 +87,22 @@
       border-left: 3px solid transparent;
       transition: 0.15s;
     }
-    .sidebar-item:hover {
-      background: #f0f2ff;
-      color: #2f3ac7;
-    }
+    .sidebar-item:hover { background: #f0f2ff; color: #2f3ac7; }
     .sidebar-item.active {
       background: #eef0ff;
       color: #2f3ac7;
       font-weight: 600;
       border-left: 3px solid #2f3ac7;
     }
-    .dot {
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
+
+    .dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
     .dot-pre  { background: #f5c518; }
     .dot-post { background: #2f3ac7; }
 
-    /* CONTENT AREA */
-    .content {
-      flex: 1;
-      overflow-y: auto;
-      padding: 28px;
-    }
+    .sidebar-divider { height: 1px; background: #e8e8e8; margin: 10px 14px; }
 
-    /* WELCOME SCREEN */
+    .content { flex: 1; overflow-y: auto; padding: 28px; }
+
     .welcome {
       display: flex;
       flex-direction: column;
@@ -145,7 +124,6 @@
       opacity: 0.9;
     }
 
-    /* SCREEN TITLE */
     .screen-title {
       font-size: 20px;
       font-weight: 700;
@@ -166,7 +144,6 @@
       border-radius: 6px;
     }
 
-    /* SUBTYPE CARDS */
     .cards-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -190,18 +167,9 @@
       box-shadow: 0 4px 14px rgba(47,58,199,0.15);
       transform: translateY(-1px);
     }
-    .card-text {
-      font-size: 14px;
-      font-weight: 500;
-      color: #222;
-    }
-    .card-arrow {
-      color: #2f3ac7;
-      font-size: 18px;
-      font-weight: 700;
-    }
+    .card-text { font-size: 14px; font-weight: 500; color: #222; }
+    .card-arrow { color: #2f3ac7; font-size: 18px; font-weight: 700; }
 
-    /* BACK BUTTON */
     .back-btn {
       display: inline-flex;
       align-items: center;
@@ -217,12 +185,8 @@
       margin-bottom: 18px;
       transition: 0.2s;
     }
-    .back-btn:hover {
-      background: #2f3ac7;
-      color: white;
-    }
+    .back-btn:hover { background: #2f3ac7; color: white; }
 
-    /* DETAIL SCREEN */
     .detail-card {
       background: white;
       border-radius: 14px;
@@ -246,7 +210,6 @@
       white-space: pre-wrap;
     }
 
-    /* SEARCH RESULTS */
     .search-result-item {
       background: white;
       border-radius: 12px;
@@ -265,7 +228,6 @@
       color: #888;
       margin-bottom: 4px;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
     }
     .search-result-item .s-subtype {
       font-size: 15px;
@@ -273,23 +235,6 @@
       color: #1a1a2e;
     }
 
-    /* DIVIDER */
-    .sidebar-divider {
-      height: 1px;
-      background: #e8e8e8;
-      margin: 10px 14px;
-    }
-
-    /* LOADING */
-    .loading {
-      text-align: center;
-      padding: 40px;
-      color: white;
-      font-size: 16px;
-      text-shadow: 0 1px 4px rgba(0,0,0,0.4);
-    }
-
-    /* SCROLLBAR */
     ::-webkit-scrollbar { width: 5px; }
     ::-webkit-scrollbar-track { background: #f1f1f1; }
     ::-webkit-scrollbar-thumb { background: #c0c0c0; border-radius: 10px; }
@@ -297,59 +242,60 @@
 </head>
 <body>
 
-  <!-- HEADER -->
   <div class="header">
     <h1>⚡ Volt Money — Support Manual</h1>
     <span>Internal Use Only</span>
   </div>
 
-  <!-- SEARCH -->
   <div class="search-container">
-    <input type="text" id="searchInput" placeholder="🔍 Search by type, subtype, pre-checks..." oninput="handleSearch()" />
+    <input type="text" id="searchInput"
+      placeholder="🔍 Search by type, subtype, pre-checks..."
+      oninput="handleSearch()" />
   </div>
 
-  <!-- MAIN LAYOUT -->
   <div class="main-layout">
-
-    <!-- SIDEBAR -->
     <div class="sidebar" id="sidebar">
-      <div class="loading">Loading...</div>
+      <div style="padding:20px;color:#999;font-size:13px;">Loading...</div>
     </div>
-
-    <!-- CONTENT -->
     <div class="content" id="content">
       <div class="welcome">
         <h2>👋 Welcome to Support Manual</h2>
         <p>Select a category from the left to get started.</p>
       </div>
     </div>
-
   </div>
 
   <script>
-    const SHEET_URL = 'https://script.google.com/macros/s/AKfycbx2VehiToTYcCiFwzsUZZee0lRQv-H-8Bbd2huvReIKBWUv6SCw1zZ34-YDNHBhArjm/exec';
+
+    // ✅ UPDATED APPS SCRIPT URL
+    const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwAqD2jfG2cKo7K7LojTWweEFPinjhQYVsgYA9wPHOCHRIJIw-QQdin59l9dgPMmkbk/exec';
 
     let allData = [];
     let currentType = null;
 
-    // ✅ FETCH DATA FROM SHEET
+    // ✅ FETCH DATA
     async function fetchData() {
       try {
         const res = await fetch(SHEET_URL);
         const data = await res.json();
+
         allData = data.map(row => ({
-          category: (row['Category'] || '').toString().trim(),
-          type:     (row['Type'] || '').toString().trim(),
-          subType:  (row['Sub Type'] || '').toString().trim(),
+          category:       (row['Category'] || '').toString().trim(),
+          type:           (row['Type'] || '').toString().trim(),
+          subType:        (row['Sub Type'] || '').toString().trim(),
           preChecks:      (row['Pre-checks'] || '').toString().trim(),
           escalationPath: (row['Escalation Path'] || '').toString().trim(),
           extraDetails:   (row['Extra Details'] || '').toString().trim(),
+
+          // ✅ PRE / POST — DIRECTLY SHEET KE CATEGORY COLUMN SE
           loanCategory: (row['Category'] || '').toString().trim().toLowerCase().includes('pre') ? 'pre' : 'post'
-        })).filter(r => r.type !== '' || r.subType !== '');
+
+        })).filter(r => r.subType !== '');
 
         buildSidebar();
       } catch(e) {
-        document.getElementById('sidebar').innerHTML = '<div style="padding:20px;color:red;font-size:13px;">❌ Error loading data.<br>Check Apps Script URL.</div>';
+        document.getElementById('sidebar').innerHTML =
+          '<div style="padding:20px;color:red;font-size:13px;">❌ Error loading data.<br>Check Apps Script URL.</div>';
       }
     }
 
@@ -363,8 +309,9 @@
       if (preTypes.length > 0) {
         html += `<div class="sidebar-section-title">🟡 Pre Loan</div>`;
         preTypes.forEach(type => {
-          html += `<div class="sidebar-item ${currentType === type ? 'active' : ''}" onclick="showSubTypes('${escapeQ(type)}')">
-                    <span class="dot dot-pre"></span>${type}
+          html += `<div class="sidebar-item ${currentType === type ? 'active' : ''}"
+                        onclick="showSubTypes('${escQ(type)}')">
+                     <span class="dot dot-pre"></span>${type}
                    </div>`;
         });
       }
@@ -376,8 +323,9 @@
       if (postTypes.length > 0) {
         html += `<div class="sidebar-section-title">🔵 Post Loan</div>`;
         postTypes.forEach(type => {
-          html += `<div class="sidebar-item ${currentType === type ? 'active' : ''}" onclick="showSubTypes('${escapeQ(type)}')">
-                    <span class="dot dot-post"></span>${type}
+          html += `<div class="sidebar-item ${currentType === type ? 'active' : ''}"
+                        onclick="showSubTypes('${escQ(type)}')">
+                     <span class="dot dot-post"></span>${type}
                    </div>`;
         });
       }
@@ -390,7 +338,7 @@
       currentType = type;
       buildSidebar();
 
-      const subtypes = allData.filter(r => r.type === type && r.subType !== '');
+      const subtypes = allData.filter(r => r.type === type);
       const loanLabel = subtypes[0]?.loanCategory === 'pre' ? '🟡 Pre Loan' : '🔵 Post Loan';
 
       let html = `
@@ -398,7 +346,7 @@
         <div class="screen-subtitle">${loanLabel} &nbsp;|&nbsp; ${subtypes.length} sub-type(s)</div>
         <div class="cards-grid">`;
 
-      subtypes.forEach((row, i) => {
+      subtypes.forEach(row => {
         html += `<div class="card" onclick="showDetail(${allData.indexOf(row)})">
                    <span class="card-text">${row.subType}</span>
                    <span class="card-arrow">›</span>
@@ -415,7 +363,7 @@
       const loanLabel = row.loanCategory === 'pre' ? '🟡 Pre Loan' : '🔵 Post Loan';
 
       let html = `
-        <button class="back-btn" onclick="showSubTypes('${escapeQ(row.type)}')">← Back</button>
+        <button class="back-btn" onclick="showSubTypes('${escQ(row.type)}')">← Back</button>
         <div class="screen-title">${row.subType}</div>
         <div class="screen-subtitle">${loanLabel} › ${row.type}</div>`;
 
@@ -425,14 +373,12 @@
                    <p>${row.preChecks}</p>
                  </div>`;
       }
-
       if (row.escalationPath) {
         html += `<div class="detail-card">
                    <h3>🔺 Escalation Path</h3>
                    <p>${row.escalationPath}</p>
                  </div>`;
       }
-
       if (row.extraDetails) {
         html += `<div class="detail-card">
                    <h3>📝 Extra Details</h3>
@@ -446,7 +392,9 @@
     // ✅ SEARCH
     function handleSearch() {
       const q = document.getElementById('searchInput').value.toLowerCase().trim();
+
       if (!q) {
+        currentType = null;
         buildSidebar();
         document.getElementById('content').innerHTML = `
           <div class="welcome">
@@ -457,6 +405,7 @@
       }
 
       const results = allData.filter(r =>
+        r.category.toLowerCase().includes(q) ||
         r.type.toLowerCase().includes(q) ||
         r.subType.toLowerCase().includes(q) ||
         r.preChecks.toLowerCase().includes(q) ||
@@ -464,16 +413,21 @@
         r.extraDetails.toLowerCase().includes(q)
       );
 
-      let html = `<div class="screen-title">Search Results</div>
-                  <div class="screen-subtitle">${results.length} result(s) for "${q}"</div>`;
+      let html = `
+        <div class="screen-title">Search Results</div>
+        <div class="screen-subtitle">${results.length} result(s) for "${q}"</div>`;
 
       if (results.length === 0) {
-        html += `<div style="background:white;padding:20px;border-radius:12px;color:#888;">No results found.</div>`;
+        html += `<div style="background:white;padding:20px;border-radius:12px;color:#888;">
+                   No results found.
+                 </div>`;
       } else {
         results.forEach(row => {
           html += `<div class="search-result-item" onclick="showDetail(${allData.indexOf(row)})">
-                     <div class="s-type">${row.loanCategory === 'pre' ? '🟡 Pre Loan' : '🔵 Post Loan'} › ${row.type}</div>
-                     <div class="s-subtype">${row.subType || row.type}</div>
+                     <div class="s-type">
+                       ${row.loanCategory === 'pre' ? '🟡 Pre Loan' : '🔵 Post Loan'} › ${row.type}
+                     </div>
+                     <div class="s-subtype">${row.subType}</div>
                    </div>`;
         });
       }
@@ -482,13 +436,13 @@
     }
 
     // HELPER
-    function escapeQ(str) {
+    function escQ(str) {
       return str.replace(/'/g, "\\'");
     }
 
-    // INIT
+    // START
     fetchData();
-  </script>
 
+  </script>
 </body>
 </html>
