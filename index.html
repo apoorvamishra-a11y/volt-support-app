@@ -268,9 +268,11 @@
       document.getElementById('searchInput').addEventListener('input', onSearch);
     });
 
-    async function loadData() {
-      try {
-        const res = await fetch('https://script.google.com/macros/s/AKfycbx2VehiToTYcCiFwzsUZZee0lRQv-H-8Bbd2huvReIKBWUv6SCw1zZ34-YDNHBhArjm/exec');
+    const res = await fetch('https://script.google.com/macros/s/AKfycbx2VehiToTYcCiFwzsUZZee0lRQv-H-8Bbd2huvReIKBWUv6SCw1zZ34-YDNHBhArjm/exec');
+const raw = await res.json();
+console.log('FIRST ROW:', JSON.stringify(raw[0])); // ← Yeh add karo
+allData = raw;
+buildSidebar();
         if (!res.ok) throw new Error('API error');
         allData = await res.json();
         buildSidebar();
