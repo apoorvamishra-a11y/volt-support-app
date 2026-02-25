@@ -1,4 +1,4 @@
-module.exports = async (req, res) => {
+[]
   res.setHeader('Access-Control-Allow-Origin', '*');
 
   const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx2VehiToTYcCiFwzsUZZee0lRQv-H-8Bbd2huvReIKBWUv6SCw1zZ34-YDNHBhArjm/exec';
