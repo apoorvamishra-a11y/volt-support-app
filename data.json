@@ -1,6 +1,6 @@
 const https = require('https');
 
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyLB9Y9dXTltQz9oWB5-R6Lyi__qJkThuvWT_ncaQPb2uV4FkJ9LAPX6mHb3BnmqFCN/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx2VehiToTYcCiFwzsUZZee0lRQv-H-8Bbd2huvReIKBWUv6SCw1zZ34-YDNHBhArjm/exec';
 
 const PRE_LOAN_TYPES = [
   'login & mobile number registration',
