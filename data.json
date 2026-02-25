@@ -1,184 +1,61 @@
-[
-  {
-    "type": "Login & Mobile Number Registration",
-    "loanCategory": "pre",
-    "subType": "Mobile Number Registration",
-    "preChecks": "1) Confirm the phone number entered by the user is correct.\n2) Confirm the phone number is active.\n3) Confirm the phone is in a good network zone to receive the OTP.",
-    "escalationPath": "If CX still does not receive OTP, raise a Zendesk / JIRA ticket. Check with the user the device type and device version (iOS / Android)."
-  },
-  {
-    "type": "Login & Mobile Number Registration",
-    "loanCategory": "pre",
-    "subType": "Issues with Fetching Portfolio",
-    "preChecks": "1) If user is unable to fetch portfolio using MF Central, user will get CAM8 and K-Fintech options to fetch their portfolio. Check if CX has fetched both CAM8 and the K-Fintech portfolio.\n2) Guide the user to click on 'Get more portfolio' to get their remaining portfolio.\n3) If CX has fetched from both CAM8 and K-Fintech, need to confirm if all their mutual funds are linked to the phone number shown on the screen.\n4) If CX confirms the phone number is correct - Guide the user to click 'Edit' option, select CAM8 and click Confirm. Once updated, click 'Get my portfolio' again and enter OTP.\n5) If CX is still unable to fetch portfolio - Check if user's portfolio is in DEMAT format. If yes, inform: 'We are currently unable to support DEMAT funds digitally. We are working to enable DEMAT funds, once the feature is enabled, you will get it updated.'\n6) If CX confirms portfolio is not in DEMAT format - Ask the user to check eligibility at: https://www.voltmoney.in/check-loan-eligibility-against-mutual-funds\n7) If user has their portfolio in EL88 lock-in period - Assist the user by saying EL88 lock-in period can be fetched once the lock-in period completes.\n8) If CX is still unable to fetch portfolio - Check if user has redeemed somewhere else, Check if user has pledged funds somewhere else, Check Approved Funds List.\n9) If CX is still facing the issue - Ask the user to share the AMC statement to precheck:\n   • Check NRI Funds\n   • Verify by getting individual AMC statements from user\n   • Check KYC - if done or not, Validated or not\n   • Check if there is any JOINT holdings - it should be as mentioned: AS: Any or Survivor, ES: Either or Survivor, SI: Singular\n\nNote: Double check with the customer if they have changed any of their contact details (Phone number or email) with the AMC in the past 6 months in case of Nippon fund.",
-    "escalationPath": "If everything is correct and user is still facing the issue, raise a Zendesk / JIRA ticket."
-  },
-  {
-    "type": "KYC Issue",
-    "loanCategory": "pre",
-    "subType": "KYC Additional Details Issue",
-    "preChecks": "1) Check KYC details and match. If user entered incorrect data, they will be able to complete the application process, but later they will be moved back to the same KYC details page by OPS, where user has to enter the correct details and complete the process.\n2) Ask the user to retry after 30 minutes.",
-    "escalationPath": "If the issue still persists, raise a Zendesk / JIRA ticket."
-  },
-  {
-    "type": "KYC Issue",
-    "loanCategory": "pre",
-    "subType": "Digilocker Issue",
-    "preChecks": "1) Ask the user to check the network connection and try again later.\n2) Ask the user to wait for 1 hour and try again.\n3) Ask the user to try from the Volt web.",
-    "escalationPath": "If the issue still persists, raise a Zendesk / JIRA ticket."
-  },
-  {
-    "type": "KYC Issue",
-    "loanCategory": "pre",
-    "subType": "PAN Incorrect",
-    "preChecks": "Cross check with Digilocker PAN card details.",
-    "escalationPath": "If PAN details are matching, raise a Zendesk / JIRA ticket."
-  },
-  {
-    "type": "KYC Issue",
-    "loanCategory": "pre",
-    "subType": "Selfie Issue",
-    "preChecks": "1) Cross check - the photo should match 70% with Aadhaar photo.\n2) Error may be because eyes are not found - either eyes are closed or user is wearing glasses.\n3) Ask the user to remove anything covering their face and try again.\n4) Check whether selfie is captured in good lighting and clear plain background. If not, ask the user to capture a selfie with good lighting and clear plain background.\n5) Ask the user to capture a single account holder photo - multiple faces should not be captured.\n6) Ask the user to allow permissions for Volt Money app / Chrome. Enable third-party cookies / pop-ups / Redirects. Suggest user to use web to complete the process.",
-    "escalationPath": "If everything is correct and user is still facing the issue, raise a Zendesk / JIRA ticket."
-  },
-  {
-    "type": "KYC Issue",
-    "loanCategory": "pre",
-    "subType": "Unable to Upload Supporting Documents",
-    "preChecks": "Ask the user to refresh the app or try with Volt web.\n\nNote: The required supporting documents are Voter ID, Passport and Driving Licence.",
-    "escalationPath": "If the user is still facing the issue, raise a Zendesk / JIRA ticket."
-  },
-  {
-    "type": "Repayment Issues",
-    "loanCategory": "post",
-    "subType": "Amount Paid but POS Not Updated in App",
-    "preChecks": "1) Paid from own account - Verify payment details and update the status.\n2) Third-party Payment:\n   • For DSP Users: Request the user to send an email from their registered email ID to support@voltmoney.in with supporting documents.\n   • For TATA: No third-party repayment will be accepted. Ask the user to drop an email to support@voltmoney.in with bank statement and cancelled cheque.\n3) Bank Transfer (Account to account) - Repayment accounting TAT is 1-2 Business days.\n4) Online Banking (UPI, Debit card, Net banking) - Expected TAT: 10 mins within Business Hours.",
-    "escalationPath": "Raise Zendesk Ticket if TAT is crossed."
-  },
-  {
-    "type": "Repayment Issues",
-    "loanCategory": "post",
-    "subType": "Amount Paid on X Date but Accounted on Y Date",
-    "preChecks": "Check repayment timing:\n1) Paid after 6 PM - Inform that amount paid after 6 PM will be accounted for next day.\n2) Check if accounted in SOA - Verify bounce charges and penal charges in SOA.\n3) Not accounted in SOA:\n   a) Status Requested - Amount will be automatically refunded if confirmation is delayed. TAT: T+7 Business days.\n   b) Status Success with Lender, Recon failed.\n   c) Status Collection Complete.",
-    "escalationPath": "Raise Zendesk / JIRA ticket if issue persists after TAT is crossed."
-  },
-  {
-    "type": "Repayment Issues",
-    "loanCategory": "post",
-    "subType": "Repayment Screen Not Opening",
-    "preChecks": "1) Ask the user to try using the web interface.\n2) Ask the user to try using the mobile app.",
-    "escalationPath": "If error persists, get screenshot and raise Zendesk / JIRA ticket."
-  },
-  {
-    "type": "Repayment Issues",
-    "loanCategory": "post",
-    "subType": "Repayment Failed",
-    "preChecks": "This can happen due to an issue with the user's bank / mode of payment.\n• For DSP & TATA: Refund TAT is 5-7 business days.\n• If payment was completed by the user but not processed in 24 hours, inform the user as a failure repayment.\n• The refund will be processed within 5 working days as per product policy.",
-    "escalationPath": "Raise Zendesk / JIRA ticket if the repayment amount is not refunded to the user's bank account and TAT is crossed."
-  },
-  {
-    "type": "Withdrawal Issues",
-    "loanCategory": "post",
-    "subType": "Withdrawal Rejected",
-    "preChecks": "1) Pending Credit Approval - Check credit approval status and inform the user.\n2) Withdrawal Amount less than Available Limit - Inform the user about minimum withdrawal amount.\nFor pending credit approval, ask the user to wait for 2-3 hours. If issue persists after TAT, raise Zendesk / JIRA ticket.",
-    "escalationPath": "Raise Zendesk / JIRA ticket if TAT is crossed."
-  },
-  {
-    "type": "Withdrawal Issues",
-    "loanCategory": "post",
-    "subType": "Unable to Place Withdrawal Request (Option Grayed Out)",
-    "preChecks": "Check application status:\n1) Status Completed - Lodgement Delayed: Check lodgement status and inform the user.\n2) Status In Progress - Account Opening Delayed: Wait for 2 hours TAT, then raise ticket if needed.\n3) Status Completed - Account Opening Completed: If withdrawal amount is reversed and not credited to user's account, Appsmith status will be automatically updated as failed.",
-    "escalationPath": "Raise Zendesk Ticket."
-  },
-  {
-    "type": "Withdrawal Issues",
-    "loanCategory": "post",
-    "subType": "Amount Not Received in Bank Account",
-    "preChecks": "Check Disbursal Status in Appsmith:\n1) Status Queued - Check expected completion tab.\n2) Status Approved - Check expected completion tab.\n3) Status Settled - Check expected completion tab.\n4) Status Lender API Failure - Raise ticket if TAT crossed.\n5) Status Rejected - Check disbursalStatusRemarks for 'Pending on checker approval'.",
-    "escalationPath": "Raise Zendesk Ticket. For TATA: Get user consent and raise ticket for manual disbursement."
-  },
-  {
-    "type": "Foreclosure Issues",
-    "loanCategory": "post",
-    "subType": "Unable to Submit Foreclosure",
-    "preChecks": "1) Check in Appsmith whether the credit sub-status is closed.\n2) Check if there is any accrued interest pending.\n3) Check if there is any excess amount to get settled.\nIf credit sub-status is closed, raise a ticket to OPS team to confirm the reason.",
-    "escalationPath": "Raise Zendesk / JIRA ticket if nothing is pending."
-  },
-  {
-    "type": "Foreclosure Issues",
-    "loanCategory": "post",
-    "subType": "Foreclosure Success but Lien Not Removed",
-    "preChecks": "Check Holding Statement and get Individual AMC Statement from user to verify lien-marked funds.",
-    "escalationPath": "If funds are still lien marked, raise Zendesk Ticket."
-  },
-  {
-    "type": "Foreclosure Issues",
-    "loanCategory": "post",
-    "subType": "Foreclosure Pending - Lender Approval",
-    "preChecks": "Wait for 1 business day TAT.",
-    "escalationPath": "If foreclosure status is still pending after 1 business day TAT, raise Zendesk ticket."
-  },
-  {
-    "type": "Foreclosure Issues",
-    "loanCategory": "post",
-    "subType": "Loan Not Closed After Foreclosure",
-    "preChecks": "Check for Holding Statement emails and NOC.\nForeclosure TAT:\n• For DSP: T+2 Business days\n• For TATA: T+5 Business days",
-    "escalationPath": "Raise Zendesk ticket if issues found."
-  },
-  {
-    "type": "Lien Removal",
-    "loanCategory": "post",
-    "subType": "Funds Still Not Unpledged",
-    "preChecks": "Ask the user to share Individual AMC statement.\n• For DSP: TAT is T+2 Business days\n• For TATA: TAT is T+3 Business days\nWait for 1 business day. If lien removal stays in queued state for more than 1 hour, verify at your end.",
-    "escalationPath": "Raise Zendesk Ticket with AMC statement attached. If TAT is breached, raise Zendesk Ticket."
-  },
-  {
-    "type": "Lien Removal",
-    "loanCategory": "post",
-    "subType": "Unable to Submit Lien Removal",
-    "preChecks": "Pre-Checks:\n1) Outstanding amount if any.\n2) How much amount user wants to unpledge.\n\nAction:\n1) If Funds are available to unlien as per calculation - Raise Ticket.\n2) If Funds are not available to unlien - Inform user to repay that amount to initiate unlien.\n\nTAT:\n• For DSP: T+2 Business days\n• For TATA: T+3 Business days",
-    "escalationPath": "If no issue identified at customer end, raise Zendesk Ticket."
-  },
-  {
-    "type": "Interest / Charges Dispute",
-    "loanCategory": "post",
-    "subType": "Bounce Charges Applied Despite Interest Payment",
-    "preChecks": "1) Check manual interest payment:\n   a) Posted as Advance Interest\n   b) Not accounted before Autodebit date\n2) Check mandate registration tracker sheet.",
-    "escalationPath": "Inform the user about mandate status and suggest manual payment before 5th of every month for DSP, 3rd for TATA. If issue found, raise Zendesk Ticket for waive off."
-  },
-  {
-    "type": "Interest / Charges Dispute",
-    "loanCategory": "post",
-    "subType": "Penal Charges Incurred",
-    "preChecks": "Check charge type. Follow same process as Bounce Charges.",
-    "escalationPath": "If issue found, raise Zendesk Ticket for waive off."
-  },
-  {
-    "type": "Interest / Charges Dispute",
-    "loanCategory": "post",
-    "subType": "Mandate Registered but Interest Charged More",
-    "preChecks": "1) Interest Amount Incorrect - Cross-check SOA & Appsmith.\n2) Interest Rate Incorrect - Cross-check SOA & Appsmith.",
-    "escalationPath": "If issue found, raise Zendesk Ticket."
-  },
-  {
-    "type": "Limit Issues",
-    "loanCategory": "post",
-    "subType": "Unable to See Updated Limit",
-    "preChecks": "Check if user has done any revocation / unlien.\nCheck Pledge Confirmation Email and Drawing Power.\nIf everything is correct, use Admin Action to Refresh Credit Info.",
-    "escalationPath": "Raise Zendesk / JIRA if discrepancy exists. Ask user to wait 2 hours TAT. Raise Zendesk / JIRA if issue persists after TAT."
-  },
-  {
-    "type": "Account Opening / Lodgement",
-    "loanCategory": "post",
-    "subType": "Account Opening Issue",
-    "preChecks": "Check Application Status.\nCheck Appsmith On-Call Dashboard for pending Account Opening Application IDs.\nConnect with customer for required documents. TAT is 2 Business hours.",
-    "escalationPath": "Raise Zendesk Tickets only if Application ID not in Dashboard."
-  },
-  {
-    "type": "Account Opening / Lodgement",
-    "loanCategory": "post",
-    "subType": "Lodgement Delayed",
-    "preChecks": "If lodgement is not done, check the application completion date and time. Ask user to wait 2 hours.\nIf complete lodgement is still not done - Check Zendesk pledge email confirmation, tally with Appsmith and Holding statement.\nIf partial lodgement is done - Check Zendesk pledge email confirmation and raise ticket for manual lodgement if TAT is crossed.",
-    "escalationPath": "For complete lodgement issue - Raise Zendesk / JIRA ticket if TAT is crossed.\nFor manual lodgement issue - Raise Zendesk ticket if TAT is crossed."
+const https = require('https');
+
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyLB9Y9dXTltQz9oWB5-R6Lyi__qJkThuvWT_ncaQPb2uV4FkJ9LAPX6mHb3BnmqFCN/exec';
+
+const PRE_LOAN_TYPES = [
+  'login & mobile number registration',
+  'kyc issue'
+];
+
+function getLoanCategory(type) {
+  if (!type) return 'post';
+  return PRE_LOAN_TYPES.includes(type.toLowerCase().trim()) ? 'pre' : 'post';
+}
+
+function fetchWithRedirect(url, count = 0) {
+  return new Promise((resolve, reject) => {
+    if (count > 5) return reject(new Error('Too many redirects'));
+    https.get(url, (res) => {
+      if ([301, 302, 307].includes(res.statusCode)) {
+        return resolve(fetchWithRedirect(res.headers.location, count + 1));
+      }
+      let raw = '';
+      res.on('data', c => raw += c);
+      res.on('end', () => resolve(raw));
+      res.on('error', reject);
+    }).on('error', reject);
+  });
+}
+
+module.exports = async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  try {
+    const raw = await fetchWithRedirect(APPS_SCRIPT_URL);
+    const parsed = JSON.parse(raw);
+
+    // Empty rows filter karo
+    const clean = parsed.filter(row =>
+      (row['Type'] && row['Type'].trim() !== '') ||
+      (row['Sub Type'] && row['Sub Type'].trim() !== '')
+    );
+
+    // Merged cells fix — Type upar se fill karo neeche
+    let lastType = '';
+    const final = clean.map(row => {
+      if (row['Type'] && row['Type'].trim() !== '') {
+        lastType = row['Type'].trim();
+      }
+      return {
+        type: lastType,
+        subType: (row['Sub Type'] || '').trim(),
+        preChecks: (row['Pre-checks'] || '').trim(),
+        escalationPath: (row['Escalation Path'] || '').trim(),
+        loanCategory: getLoanCategory(lastType)
+      };
+    });
+
+    res.status(200).json(final);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
   }
-]
+};
