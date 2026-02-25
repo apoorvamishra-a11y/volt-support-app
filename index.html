@@ -329,4 +329,166 @@
   <script>
     const SHEET_URL = 'https://script.google.com/macros/s/AKfycbx2VehiToTYcCiFwzsUZZee0lRQv-H-8Bbd2huvReIKBWUv6SCw1zZ34-YDNHBhArjm/exec';
 
-   
+    let allData = [];
+    let currentType = null;
+
+    // ✅ FETCH DATA FROM SHEET
+    async function fetchData() {
+      try {
+        const res = await fetch(SHEET_URL);
+        const data = await res.json();
+        allData = data.map(row => ({
+          category: (row['Category'] || '').toString().trim(),
+          type:     (row['Type'] || '').toString().trim(),
+          subType:  (row['Sub Type'] || '').toString().trim(),
+          preChecks:      (row['Pre-checks'] || '').toString().trim(),
+          escalationPath: (row['Escalation Path'] || '').toString().trim(),
+          extraDetails:   (row['Extra Details'] || '').toString().trim(),
+          loanCategory: (row['Category'] || '').toString().trim().toLowerCase().includes('pre') ? 'pre' : 'post'
+        })).filter(r => r.type !== '' || r.subType !== '');
+
+        buildSidebar();
+      } catch(e) {
+        document.getElementById('sidebar').innerHTML = '<div style="padding:20px;color:red;font-size:13px;">❌ Error loading data.<br>Check Apps Script URL.</div>';
+      }
+    }
+
+    // ✅ BUILD SIDEBAR
+    function buildSidebar() {
+      const preTypes  = [...new Set(allData.filter(r => r.loanCategory === 'pre').map(r => r.type).filter(Boolean))];
+      const postTypes = [...new Set(allData.filter(r => r.loanCategory === 'post').map(r => r.type).filter(Boolean))];
+
+      let html = '';
+
+      if (preTypes.length > 0) {
+        html += `<div class="sidebar-section-title">🟡 Pre Loan</div>`;
+        preTypes.forEach(type => {
+          html += `<div class="sidebar-item ${currentType === type ? 'active' : ''}" onclick="showSubTypes('${escapeQ(type)}')">
+                    <span class="dot dot-pre"></span>${type}
+                   </div>`;
+        });
+      }
+
+      if (preTypes.length > 0 && postTypes.length > 0) {
+        html += `<div class="sidebar-divider"></div>`;
+      }
+
+      if (postTypes.length > 0) {
+        html += `<div class="sidebar-section-title">🔵 Post Loan</div>`;
+        postTypes.forEach(type => {
+          html += `<div class="sidebar-item ${currentType === type ? 'active' : ''}" onclick="showSubTypes('${escapeQ(type)}')">
+                    <span class="dot dot-post"></span>${type}
+                   </div>`;
+        });
+      }
+
+      document.getElementById('sidebar').innerHTML = html;
+    }
+
+    // ✅ SHOW SUBTYPES
+    function showSubTypes(type) {
+      currentType = type;
+      buildSidebar();
+
+      const subtypes = allData.filter(r => r.type === type && r.subType !== '');
+      const loanLabel = subtypes[0]?.loanCategory === 'pre' ? '🟡 Pre Loan' : '🔵 Post Loan';
+
+      let html = `
+        <div class="screen-title">${type}</div>
+        <div class="screen-subtitle">${loanLabel} &nbsp;|&nbsp; ${subtypes.length} sub-type(s)</div>
+        <div class="cards-grid">`;
+
+      subtypes.forEach((row, i) => {
+        html += `<div class="card" onclick="showDetail(${allData.indexOf(row)})">
+                   <span class="card-text">${row.subType}</span>
+                   <span class="card-arrow">›</span>
+                 </div>`;
+      });
+
+      html += `</div>`;
+      document.getElementById('content').innerHTML = html;
+    }
+
+    // ✅ SHOW DETAIL
+    function showDetail(index) {
+      const row = allData[index];
+      const loanLabel = row.loanCategory === 'pre' ? '🟡 Pre Loan' : '🔵 Post Loan';
+
+      let html = `
+        <button class="back-btn" onclick="showSubTypes('${escapeQ(row.type)}')">← Back</button>
+        <div class="screen-title">${row.subType}</div>
+        <div class="screen-subtitle">${loanLabel} › ${row.type}</div>`;
+
+      if (row.preChecks) {
+        html += `<div class="detail-card">
+                   <h3>✅ Pre-Checks</h3>
+                   <p>${row.preChecks}</p>
+                 </div>`;
+      }
+
+      if (row.escalationPath) {
+        html += `<div class="detail-card">
+                   <h3>🔺 Escalation Path</h3>
+                   <p>${row.escalationPath}</p>
+                 </div>`;
+      }
+
+      if (row.extraDetails) {
+        html += `<div class="detail-card">
+                   <h3>📝 Extra Details</h3>
+                   <p>${row.extraDetails}</p>
+                 </div>`;
+      }
+
+      document.getElementById('content').innerHTML = html;
+    }
+
+    // ✅ SEARCH
+    function handleSearch() {
+      const q = document.getElementById('searchInput').value.toLowerCase().trim();
+      if (!q) {
+        buildSidebar();
+        document.getElementById('content').innerHTML = `
+          <div class="welcome">
+            <h2>👋 Welcome to Support Manual</h2>
+            <p>Select a category from the left to get started.</p>
+          </div>`;
+        return;
+      }
+
+      const results = allData.filter(r =>
+        r.type.toLowerCase().includes(q) ||
+        r.subType.toLowerCase().includes(q) ||
+        r.preChecks.toLowerCase().includes(q) ||
+        r.escalationPath.toLowerCase().includes(q) ||
+        r.extraDetails.toLowerCase().includes(q)
+      );
+
+      let html = `<div class="screen-title">Search Results</div>
+                  <div class="screen-subtitle">${results.length} result(s) for "${q}"</div>`;
+
+      if (results.length === 0) {
+        html += `<div style="background:white;padding:20px;border-radius:12px;color:#888;">No results found.</div>`;
+      } else {
+        results.forEach(row => {
+          html += `<div class="search-result-item" onclick="showDetail(${allData.indexOf(row)})">
+                     <div class="s-type">${row.loanCategory === 'pre' ? '🟡 Pre Loan' : '🔵 Post Loan'} › ${row.type}</div>
+                     <div class="s-subtype">${row.subType || row.type}</div>
+                   </div>`;
+        });
+      }
+
+      document.getElementById('content').innerHTML = html;
+    }
+
+    // HELPER
+    function escapeQ(str) {
+      return str.replace(/'/g, "\\'");
+    }
+
+    // INIT
+    fetchData();
+  </script>
+
+</body>
+</html>
