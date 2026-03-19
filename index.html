@@ -89,15 +89,31 @@
       padding: 10px 0;
     }
 
+    /* ── Normal section titles: bold + larger ── */
     .sidebar-section-title {
-      font-size: 11px;
-      font-weight: 700;
+      font-size: 15px;
+      font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 1px;
-      color: #888;
+      color: #444;
       padding: 10px 18px 6px;
       margin-top: 4px;
     }
+
+    /* ── Important Update alert section title ── */
+    .sidebar-section-title.alert {
+      background: #e74c3c;
+      color: white;
+      border-radius: 6px;
+      margin: 6px 10px 2px 10px;
+      padding: 10px 12px 8px;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* ── Normal sidebar items: exactly as original ── */
     .sidebar-item {
       display: flex;
       align-items: center;
@@ -105,6 +121,7 @@
       padding: 10px 18px;
       cursor: pointer;
       font-size: 13.5px;
+      font-weight: 400;
       color: #333;
       border-left: 3px solid transparent;
       transition: 0.15s;
@@ -116,10 +133,49 @@
       font-weight: 600;
       border-left: 3px solid #2f3ac7;
     }
-    .dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
-    .dot-pre  { background: #f5c518; }
-    .dot-post { background: #2f3ac7; }
-    .sidebar-divider { height: 1px; background: #e8e8e8; margin: 8px 14px; }
+
+    /* ── Important Update alert items ── */
+    .sidebar-item.alert-item {
+      background: #fff0f0;
+      border-left: 3px solid #e74c3c;
+      color: #c0392b;
+      font-weight: 500;
+    }
+    .sidebar-item.alert-item:hover {
+      background: #ffe0e0;
+      color: #c0392b;
+    }
+    .sidebar-item.alert-item.active {
+      background: #ffd5d5;
+      border-left: 3px solid #c0392b;
+      color: #c0392b;
+      font-weight: 600;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: inline-block;
+      background: #2f3ac7;
+    }
+
+    .dot.alert-dot {
+      background: #e74c3c;
+    }
+
+    .bell-icon {
+      font-size: 15px;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+
+    .sidebar-divider {
+      height: 1px;
+      background: #e8e8e8;
+      margin: 8px 14px;
+    }
 
     .content-wrapper {
       flex: 1;
@@ -139,7 +195,7 @@
       z-index: 1;
     }
     .welcome-box {
-      background: rgba(60, 60, 70, 0.62);
+      background: rgba(60,60,70,0.62);
       border-radius: 16px;
       padding: 36px 48px;
       backdrop-filter: blur(6px);
@@ -299,7 +355,6 @@
   </div>
 
   <div class="main-layout">
-
     <div class="sidebar">
       <div class="sidebar-search">
         <input type="text" id="searchInput"
@@ -320,7 +375,6 @@
       </div>
       <div class="content-inner" id="contentInner"></div>
     </div>
-
   </div>
 
   <script>
@@ -329,14 +383,18 @@
     let allData = [];
     let currentType = null;
 
-    // ✅ Dono formats handle karta hai — plain URL bhi, [Text](URL) bhi
+    // Detect if a category is an "Important Update" type
+    // Matches any variation: "Important Update", "Impotant updates", etc.
+    function isAlertCategory(cat) {
+      const c = (cat || '').toLowerCase();
+      return c.includes('important') || c.includes('impotant') || c.includes('alert');
+    }
+
     function parseLinks(text) {
-      // Step 1: [Text](URL) format
-      text = text.replace(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g,
+      text = text.replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g,
         '<a href="$2" target="_blank">$1</a>'
       );
-      // Step 2: Plain URL format
-      text = text.replace(/(^|[\s\n])((https?:\/\/)[^\s<]+)/g,
+      text = text.replace(/(^|[\s\n])(https?:\/\/[^\s<"]+)/g,
         '$1<a href="$2" target="_blank">$2</a>'
       );
       return text;
@@ -362,14 +420,13 @@
         const data = await res.json();
 
         allData = data.map(row => ({
-          category:       (row['Category'] || '').toString().trim(),
-          type:           (row['Type'] || '').toString().trim(),
-          subType:        (row['Sub Type'] || '').toString().trim(),
-          preChecks:      (row['Pre-checks'] || '').toString().trim(),
+          category:       (row['Category']        || '').toString().trim(),
+          type:           (row['Type']            || '').toString().trim(),
+          subType:        (row['Sub Type']        || '').toString().trim(),
+          preChecks:      (row['Pre-checks']      || '').toString().trim(),
           escalationPath: (row['Escalation Path'] || '').toString().trim(),
-          extraDetails:   (row['Extra Details'] || '').toString().trim(),
-          loanCategory:   (row['Category'] || '').toString().trim().toLowerCase().includes('pre') ? 'pre' : 'post'
-        })).filter(r => r.subType !== '');
+          extraDetails:   (row['Extra Details']   || '').toString().trim(),
+        })).filter(r => r.subType !== '' && r.type !== '');
 
         buildSidebar();
       } catch(e) {
@@ -379,34 +436,58 @@
     }
 
     function buildSidebar() {
-      const preTypes  = [...new Set(allData.filter(r => r.loanCategory === 'pre').map(r => r.type).filter(Boolean))];
-      const postTypes = [...new Set(allData.filter(r => r.loanCategory === 'post').map(r => r.type).filter(Boolean))];
+      const categoryOrder = [];
+      const categoryMap   = {};
+
+      allData.forEach(r => {
+        if (!r.category || !r.type) return;
+        if (!categoryMap[r.category]) {
+          categoryMap[r.category] = [];
+          categoryOrder.push(r.category);
+        }
+        if (!categoryMap[r.category].includes(r.type)) {
+          categoryMap[r.category].push(r.type);
+        }
+      });
+
+      if (categoryOrder.length === 0) {
+        document.getElementById('sidebar').innerHTML =
+          '<div style="padding:20px;color:#999;font-size:13px;">No data found.</div>';
+        return;
+      }
 
       let html = '';
+      categoryOrder.forEach((cat, idx) => {
+        const types   = categoryMap[cat];
+        const isAlert = isAlertCategory(cat);
 
-      if (preTypes.length > 0) {
-        html += `<div class="sidebar-section-title">🟡 Pre Loan</div>`;
-        preTypes.forEach(type => {
-          html += `<div class="sidebar-item ${currentType === type ? 'active' : ''}"
-                        onclick="showSubTypes('${escQ(type)}')">
-                     <span class="dot dot-pre"></span>${type}
-                   </div>`;
+        // Section title — red box for alert, normal for others
+        if (isAlert) {
+          html += `<div class="sidebar-section-title alert">🔔 ${cat}</div>`;
+        } else {
+          html += `<div class="sidebar-section-title">${cat}</div>`;
+        }
+
+        types.forEach(type => {
+          const isActive = currentType === type ? 'active' : '';
+
+          if (isAlert) {
+            html += `<div class="sidebar-item alert-item ${isActive}"
+                          onclick="showSubTypes('${escQ(type)}')">
+                       <span class="bell-icon">🔔</span>${type}
+                     </div>`;
+          } else {
+            html += `<div class="sidebar-item ${isActive}"
+                          onclick="showSubTypes('${escQ(type)}')">
+                       <span class="dot"></span>${type}
+                     </div>`;
+          }
         });
-      }
 
-      if (preTypes.length > 0 && postTypes.length > 0) {
-        html += `<div class="sidebar-divider"></div>`;
-      }
-
-      if (postTypes.length > 0) {
-        html += `<div class="sidebar-section-title">🔵 Post Loan</div>`;
-        postTypes.forEach(type => {
-          html += `<div class="sidebar-item ${currentType === type ? 'active' : ''}"
-                        onclick="showSubTypes('${escQ(type)}')">
-                     <span class="dot dot-post"></span>${type}
-                   </div>`;
-        });
-      }
+        if (idx < categoryOrder.length - 1) {
+          html += `<div class="sidebar-divider"></div>`;
+        }
+      });
 
       document.getElementById('sidebar').innerHTML = html;
     }
@@ -416,11 +497,13 @@
       buildSidebar();
 
       const subtypes = allData.filter(r => r.type === type);
-      const loanLabel = subtypes[0]?.loanCategory === 'pre' ? '🟡 Pre Loan' : '🔵 Post Loan';
+      if (subtypes.length === 0) return;
+
+      const cat = subtypes[0].category;
 
       let html = `
         <div class="screen-title">${type}</div>
-        <div class="screen-subtitle">${loanLabel} &nbsp;|&nbsp; ${subtypes.length} sub-type(s)</div>
+        <div class="screen-subtitle">${cat} &nbsp;|&nbsp; ${subtypes.length} sub-type(s)</div>
         <div class="cards-grid">`;
 
       subtypes.forEach(row => {
@@ -436,12 +519,12 @@
 
     function showDetail(index) {
       const row = allData[index];
-      const loanLabel = row.loanCategory === 'pre' ? '🟡 Pre Loan' : '🔵 Post Loan';
+      if (!row) return;
 
       let html = `
         <button class="back-btn" onclick="showSubTypes('${escQ(row.type)}')">← Back</button>
         <div class="screen-title">${row.subType}</div>
-        <div class="screen-subtitle">${loanLabel} › ${row.type}</div>`;
+        <div class="screen-subtitle">${row.category} › ${row.type}</div>`;
 
       if (row.preChecks) {
         html += `<div class="detail-card"><h3>✅ Pre-Checks</h3><p>${parseLinks(row.preChecks)}</p></div>`;
@@ -467,10 +550,10 @@
       }
 
       const results = allData.filter(r =>
-        r.category.toLowerCase().includes(q) ||
-        r.type.toLowerCase().includes(q) ||
-        r.subType.toLowerCase().includes(q) ||
-        r.preChecks.toLowerCase().includes(q) ||
+        r.category.toLowerCase().includes(q)      ||
+        r.type.toLowerCase().includes(q)           ||
+        r.subType.toLowerCase().includes(q)        ||
+        r.preChecks.toLowerCase().includes(q)      ||
         r.escalationPath.toLowerCase().includes(q) ||
         r.extraDetails.toLowerCase().includes(q)
       );
@@ -480,13 +563,11 @@
         <div class="screen-subtitle">${results.length} result(s) for "${q}"</div>`;
 
       if (results.length === 0) {
-        html += `<div style="background:white;padding:20px;border-radius:12px;color:#888;">No results found.</div>`;
+        html += `<div style="background:white;padding:20px;border-radius:12px;color:#888;font-size:14px;">No results found.</div>`;
       } else {
         results.forEach(row => {
           html += `<div class="search-result-item" onclick="showDetail(${allData.indexOf(row)})">
-                     <div class="s-type">
-                       ${row.loanCategory === 'pre' ? '🟡 Pre Loan' : '🔵 Post Loan'} › ${row.type}
-                     </div>
+                     <div class="s-type">${row.category} › ${row.type}</div>
                      <div class="s-subtype">${row.subType}</div>
                    </div>`;
         });
@@ -496,7 +577,7 @@
     }
 
     function escQ(str) {
-      return str.replace(/'/g, "\\'");
+      return (str || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
     }
 
     fetchData();
